@@ -191,11 +191,16 @@ describe('a song', function () {
         expect(foundSong.title).to.equal(songs[1].title);
         expect(foundSong.artist).to.equal(songs[1].artist);
         done();
-      })
-
+      });
     });
-    xit ('gets a song by its key', function (done) {
 
+    it ('gets a song by its key', function (done) {
+      Song.findOne({ key: songs[2].key }, function (err, foundSong) {
+        expect(err).to.equal(null);
+        expect(foundSong.title).to.equal(songs[2].title);
+        expect(foundSong.artist).to.equal(songs[2].artist);
+        done();
+      });
     });
     xit ('returns a list of all songs in the database in the proper order', function (done) {
       
