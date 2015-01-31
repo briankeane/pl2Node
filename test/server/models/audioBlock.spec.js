@@ -20,3 +20,4 @@ describe('a song', function () {
       done();
     });
   });
+});

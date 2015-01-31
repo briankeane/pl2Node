@@ -1,4 +1,5 @@
 var db = require('../db');
+var timestamps = require('mongoose-timestamp');
 
 var userSchema = db.Schema({
   twitter:            { type: String },
@@ -14,5 +15,6 @@ userSchema.methods.trueOrFalse = function () {
   return 'true AND false, mf';
 }
 
+userSchema.plugin(timestamps);
 var User = db.model('User', userSchema);
 module.exports = User;

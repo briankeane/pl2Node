@@ -33,7 +33,7 @@ describe('a song', function () {
   it ('persists a song', function (done) {
     song.save(function (err, user) {
       expect(err).to.equal(null);
-      Song.findOne({ artist: 'BrianKeaneTunes' }, function (err, gottenUser) {
+      Song.findOne({ artist: 'Rachel Loy' }, function (err, gottenUser) {
         expect(err).to.equal(null);
         expect(song.artist).to.equal('Rachel Loy');
         expect(song.title).to.equal('Stepladder');
@@ -45,4 +45,67 @@ describe('a song', function () {
       });
     });
   });
+
+  it ('can be retrieved by id', function (done) {
+    song.save(function (err, savedSong) {
+      Song.findById(savedSong.id, function (err, gottenSong) {
+        expect(err).to.equal(null);
+        expect(gottenSong.artist).to.equal('Rachel Loy');
+        done();
+      });
+    });
+  });
+
+  it ('can be updated', function (done) {
+      song.save(function (err, savedSong) {
+      Song.findByIdAndUpdate(savedSong.id, { $set: { artist: 'Adam Hood',
+                                                title: 'He Did',
+                                                album: 'Welcome to the Big World',
+                                                duration: 1990,
+                                                key: 'ThisIsADifferentKey',
+                                                echonestId: 'anotherEchonestId' } }, function (err, updatedSong) {
+        expect(err).to.equal(null);
+        expect(updatedSong.artist).to.equal('Adam Hood');
+        expect(updatedSong.title).to.equal('He Did');
+        expect(updatedSong.album).to.equal('Welcome to the Big World');
+        expect(updatedSong.duration).to.equal(1990);
+        expect(updatedSong.key).to.equal('ThisIsADifferentKey');
+        expect(updatedSong.echonestId).to.equal('anotherEchonestId');
+        done();
+      });
+    });
+  });
+  
+  xit ('can be deleted', function (done) {
+  });
+  xit ('finds out if a song exists', function (done) {
+
+  });
+  describe ('song retrieval tests', function (done) {
+
+    xit ('gets a list of songs by title', function (done) {
+
+    });
+    xit ('gets a list of songs by artist', function (done) {
+
+    });
+    xit ('gets a list of songs by keywords', function (done) {
+
+    });
+    xit ('gets a list of songs by artist and title', function (done) {
+
+    });
+    xit ('gets a song by its echonest_id', function (done) {
+
+    });
+    xit ('gets a song by its key', function (done) {
+
+    });
+    xit ('returns a list of all songs in the database in the proper order', function (done) {
+      
+    });
+  });
+
+
+
 });
