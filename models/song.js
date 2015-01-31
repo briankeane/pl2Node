@@ -18,5 +18,33 @@ songSchema.statics.findAllMatchingTitle = function (title, cb) {
   .exec(cb);
 }
 
+songSchema.statics.findAllMatchingArtist = function (artist, cb) {
+  Song
+  .find({ artist: new RegExp('^'+artist, "i") })
+  .sort('title')
+  .exec(cb);
+}
+
+songSchema.statics.keywordSearch = function (keywords, cb) {
+  
+  // create an array of regex's
+  var keywordsArray = keywords.split(' ');
+  var keywordsRegexs = [];
+  for (var i=0; i<keywordsArray.length; i++) {
+    keywordsRegexs.push(new RegExp(keywordsArray[i], "i"));
+  }
+
+  // build the query
+  var query = { $and: [] };
+  for (var i=0; i<keywordsRegexs.length; i++) {
+    query['$and'].push({ $or: [{ title: keywordsRegexs[i] }, { artist: keywordsRegexs[i] }] });
+  }
+
+  Song
+  .find(query)
+  .sort({ artist: 1, title: 1 })
+  .exec(cb);
+}
+
 var Song = db.model('Song', songSchema);
 module.exports = Song;

@@ -15,7 +15,6 @@ describe('a song', function () {
                         duration: 180000,
                         key: 'ThisIsAKey.mp3',
                         echonestId: 'ECHONEST_ID' });
-      debugger;
       done();
     });
   });
@@ -144,11 +143,24 @@ describe('a song', function () {
         done();
       });
     });
-    xit ('gets a list of songs by artist', function (done) {
 
+    it ('gets a list of songs by artist', function (done) {
+      Song.findAllMatchingArtist('Brian Keane', function (err, foundSongs) {
+        expect(foundSongs.length).to.equal(3);
+        expect(foundSongs[0].title).to.equal("Bar Brights");
+        expect(foundSongs[2].title).to.equal("Bar Nights");
+        done();
+      });
     });
-    xit ('gets a list of songs by keywords', function (done) {
 
+    it ('gets a list of songs by keywords', function (done) {
+      Song.keywordSearch('Bar kea', function (err, foundSongs) {
+        expect(err).to.equal(null);
+        expect(foundSongs.length).to.equal(3);
+        expect(foundSongs[0].title).to.equal('Bar Brights');
+        expect(foundSongs[2].title).to.equal('Bar Nights');
+        done();
+      });
     });
     xit ('gets a list of songs by artist and title', function (done) {
 
