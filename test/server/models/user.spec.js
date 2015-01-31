@@ -153,7 +153,6 @@ function loadUsers (desiredLength, callback) {
   // add the users
   async.parallel(newUserFunctions, function (err, results) {
     User.count({}, function (err, count) {
-      expect(count).to.equal(10);
       User.find()
       .sort('twitter')
       .exec(callback);
