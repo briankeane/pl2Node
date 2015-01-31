@@ -17,6 +17,7 @@ describe('a user', function () {
                       birthYear: 1977,
                       gender: 'male',
                       profileImageUrl: 'http://badass.jpg' });
+
   });
 
   it ('is created with an id, twitter_uid, email, birth_year, gender, ' + 
