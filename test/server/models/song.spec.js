@@ -202,8 +202,18 @@ describe('a song', function () {
         done();
       });
     });
-    xit ('returns a list of all songs in the database in the proper order', function (done) {
-      
+    it ('returns a list of all songs in the database in the proper order', function (done) {
+      Song.all(function (err, songList) {
+        debugger;
+        expect(err).to.equal(null);
+        expect(songList.length).to.equal(5);
+        expect(songList[0].title).to.equal('Bar First');
+        expect(songList[1].title).to.equal('Hell');
+        expect(songList[2].title).to.equal('Bar Brights');
+        expect(songList[3].title).to.equal('Bar Lights');
+        expect(songList[4].title).to.equal('Bar Nights');
+        done();
+      })  
     });
   });
 

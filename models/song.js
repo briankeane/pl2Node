@@ -52,5 +52,12 @@ songSchema.statics.findAllByTitleAndArtist = function (queryObject, cb) {
   .exec(cb);
 }
 
+songSchema.statics.all = function (cb) {
+  Song
+  .find()
+  .sort({ artist: 1, title: 1 })
+  .exec(cb);
+}
+
 var Song = db.model('Song', songSchema);
 module.exports = Song;
