@@ -12,4 +12,8 @@ switch(process.env.NODE_ENV) {
     });
 }
 
+mongoose.connection.on('error', function (err) {
+  console.log('connection error');
+})
+
 module.exports = mongoose;

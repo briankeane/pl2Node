@@ -2,6 +2,9 @@ var db = require('../../../db');
 var User = require('../../../models/user');
 var Station = require('../../../models/station');
 var expect = require('chai').expect;
+var async = require('async');
+
+
 
 describe('a user', function () {
   var user;
@@ -45,7 +48,6 @@ describe('a user', function () {
 
   it ('can be gotten by its id', function (done) {
     user.save(function (err, savedUser) {
-      debugger;
       User.findById(savedUser.id, function (err, gottenUser) {
         expect(err).to.equal(null);
         expect(gottenUser.twitter).to.equal('BrianKeaneTunes');
@@ -86,6 +88,44 @@ describe('a user', function () {
     });
   });
 
+  it ('can be deleted', function (done) {
+    user.save(function (err, savedUser) {
+      expect(err).to.equal(null);
+      savedUser.remove();
+      User.findById(savedUser.id, function(err, deletedUser) {
+        expect(err).to.eq(null);
+        expect(deletedUser).to.equal(null);
+        done();
+      });
+    });0
+  });
+
+  it ('gets all users', function (done) {
+    // load the database 
+    loadUsers(10, function (err, users) {
+      expect(users[0].twitter).to.equal('bob0');
+      expect(users[4].twitter).to.equal('bob4');
+      expect(users.length).to.equal(10);
+      done();
+    });
+
+  });
+
+  it ('destroys all users', function (done) {
+    loadUsers(10, function (err, users) {
+      User.find({}, function (err, foundUsers) {
+        expect(err).to.equal(null);
+        expect(foundUsers.length).to.equal(10);
+        User.remove({}, function (err) {
+          User.find({}, function (err, users) {
+            expect(users.length).to.equal(0);
+            done();
+          });
+        });
+      });
+    });
+  });
+
   xit ('gets its station', function (done) {
     // to do
   })
@@ -93,3 +133,29 @@ describe('a user', function () {
   //describe('db-user-functions', function() {
   //});
 });
+
+// loads the db with x number of records
+function loadUsers (desiredLength, callback) {
+  var newUsers = [];
+  var newUserFunctions = [];
+
+  // make 10 users and store their 'save' functions
+  for (var i=0; i<desiredLength; i++) {
+    newUsers.push(new User({twitter: 'bob' + i }));
+    newUserFunctions.push((function (user) {
+      return function (callback) {
+        user.save(callback);
+      };
+    })(newUsers[i]));
+  }
+
+  // add the users
+  async.parallel(newUserFunctions, function (err, results) {
+    User.count({}, function (err, count) {
+      expect(count).to.equal(10);
+      User.find()
+      .sort('twitter')
+      .exec(callback);
+    });
+  });
+}
