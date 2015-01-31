@@ -26,7 +26,6 @@ songSchema.statics.findAllMatchingArtist = function (artist, cb) {
 }
 
 songSchema.statics.keywordSearch = function (keywords, cb) {
-  
   // create an array of regex's
   var keywordsArray = keywords.split(' ');
   var keywordsRegexs = [];
@@ -42,6 +41,13 @@ songSchema.statics.keywordSearch = function (keywords, cb) {
 
   Song
   .find(query)
+  .sort({ artist: 1, title: 1 })
+  .exec(cb);
+}
+
+songSchema.statics.findAllByTitleAndArtist = function (queryObject, cb) {
+  Song
+  .find(queryObject)
   .sort({ artist: 1, title: 1 })
   .exec(cb);
 }

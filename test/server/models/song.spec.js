@@ -162,10 +162,31 @@ describe('a song', function () {
         done();
       });
     });
-    xit ('gets a list of songs by artist and title', function (done) {
 
+    it ('gets a list of songs by artist and title', function (done) {
+      Song.findAllByTitleAndArtist({ artist: 'Bob Dylan',
+                                        title: 'Bar First' }, function (err, foundSongs) {
+        expect(err).to.equal(null);
+        expect(foundSongs.length).to.equal(1);
+        expect(foundSongs[0].title).to.equal(songs[3].title)
+        expect(foundSongs[0].artist).to.equal(songs[3].artist)
+        done();
+      });
     });
+
+    it ('gets another list of songs by artist and title', function (done) {
+      Song.findAllByTitleAndArtist({ artist: 'Bob Dylan',
+                                        title: 'Hell' }, function (err, foundSongs) {
+        expect(err).to.equal(null);
+        expect(foundSongs.length).to.equal(1);
+        expect(foundSongs[0].title).to.equal(songs[4].title)
+        expect(foundSongs[0].artist).to.equal(songs[4].artist)
+        done();
+      });
+    });
+
     xit ('gets a song by its echonest_id', function (done) {
+
 
     });
     xit ('gets a song by its key', function (done) {
