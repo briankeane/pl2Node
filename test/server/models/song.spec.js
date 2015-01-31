@@ -185,8 +185,13 @@ describe('a song', function () {
       });
     });
 
-    xit ('gets a song by its echonest_id', function (done) {
-
+    it ('gets a song by its echonest_id', function (done) {
+      Song.findOne({ echonestId: songs[1].echonestId }, function (err, foundSong) {
+        expect(err).to.equal(null);
+        expect(foundSong.title).to.equal(songs[1].title);
+        expect(foundSong.artist).to.equal(songs[1].artist);
+        done();
+      })
 
     });
     xit ('gets a song by its key', function (done) {
