@@ -44,9 +44,20 @@ describe('a station', function () {
     done();
   });
 
-  xit ('contains its users', function (done) {
+  it ('can be updated', function (done) {
+    user2 = new User ({ twitter: 'bla' });
+    user2.save(function (err, savedUser) {
+      Station.findByIdAndUpdate(station.id, { $set: { _user: user2.id, 
+                                                    secsOfCommercialPerHour: 10 } },
+                                  function (err, updatedStation) {
+        expect(updatedStation.secsOfCommercialPerHour).to.equal(10)
+        expect(updatedStation._user.equals(user2.id)).to.equal(true);
+        done();
+      });
+      
+    })
+  });
 
-  })
 
   xit ('returns a genre hash', function (done) {
 
