@@ -21,23 +21,9 @@ var rotationItemSchema = db.Schema({
             ]
 });
 
-rotationItemSchema.statics.update = function (attrs, callback) {
-  // if a new value is passed
-  if (attrs.currentWeight != this.currentWeight) {
-    
-    this.history.push({ bin: this.currentBin,
-                      weight: this.currentWeight,
-                      assignedAt: this.assignedAt });
-    this.assignedAt = moment.utc();
-    this.weight = attrs.currentWeight;
-    this.bin = attrs.currentBin || this.currentBin;
-    this.save(callback);
-  } else {
-    if(callback) {
-      callback();
-    }
-  }
-}
+// ***********************************************************
+// ******************** Common Queries ***********************
+// ***********************************************************
 
 rotationItemSchema.statics.findByIdAndPopulate = function (id, callback) {
   RotationItem
@@ -45,6 +31,19 @@ rotationItemSchema.statics.findByIdAndPopulate = function (id, callback) {
   .populate('_station _song')
   .exec(callback);
 };
+
+rotationItemSchema.statics.findForStationAndPopulate = function (stationId, callback) {
+  RotationItem
+  .find({ _station: stationId })
+  .populate('_station _song')
+  .sort('bin -weight')
+  .exec(callback);
+};
+
+
+// ***********************************************************
+// ************************ Methods **************************
+// ***********************************************************
 
 rotationItemSchema.methods.updateWeight = function (weight, callback) {
   // do nothing if there is no change
@@ -61,7 +60,7 @@ rotationItemSchema.methods.updateWeight = function (weight, callback) {
     this.assignedAt = Date.now();
     this.save(callback);
   }
-}
+};
 
 rotationItemSchema.methods.updateBin = function (bin, callback) {
   // do nothing if there is no change
@@ -78,7 +77,7 @@ rotationItemSchema.methods.updateBin = function (bin, callback) {
     this.assignedAt = Date.now();
     this.save(callback);
   }
-}
+};
 
 rotationItemSchema.methods.updateWeightAndBin = function (weight, bin, callback) {
   // do nothing if there is no change
