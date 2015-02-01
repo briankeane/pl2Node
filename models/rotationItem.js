@@ -11,7 +11,7 @@ var rotationItemSchema = db.Schema({
   _song:                { type: db.Schema.ObjectId, ref: 'Song' },
   bin:                  { type: String },
   weight:               { type: Number },
-  assignedAt:           { type: Date, default: moment.utc() },
+  assignedAt:           { type: Date, default: Date.now() },
   history: [
               { 
                 bin:        { type: String}, 
@@ -47,23 +47,37 @@ rotationItemSchema.statics.findByIdAndPopulate = function (id, callback) {
 };
 
 rotationItemSchema.methods.updateWeight = function (weight, callback) {
+  // do nothing if there is no change
   if (weight == this.weight) {
     callback(null, this);
   } else {
     // store the old values in history array
     this.history.push({ bin: this.bin,
                         weight: this.weight,
-                        assignedAt: this.assignedAt});
+                        assignedAt: this.assignedAt });
 
     // update new values
     this.weight = weight;
-    this.assignedAt = moment.utc();
+    this.assignedAt = Date.now();
     this.save(callback);
   }
 }
 
 rotationItemSchema.methods.updateBin = function (bin, callback) {
-  callback();
+  // do nothing if there is no change
+  if (this.bin == bin) {
+    callback(null, this);
+  } else {
+    // store the old values in history array
+    this.history.push({ bin: this.bin,
+                        weight: this.weight,
+                        assignedAt: this.assignedAt });
+
+    // update new values
+    this.bin = bin;
+    this.assignedAt = Date.now();
+    this.save(callback);
+  }
 }
 
 rotationItemSchema.methods.updateWeightAndBin = function (weight, bin, callback) {
