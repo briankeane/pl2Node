@@ -21,13 +21,13 @@ describe('a rotationItem', function () {
                         key: 'ThisIsAKey.mp3',
                         echonestId: 'ECHONEST_ID' });
 
-      station = new Station({ _user: 1, secsOfCommercialPerHour: 3 });
+      station = new Station({ secsOfCommercialPerHour: 3 });
       
       SpecHelper.saveAll([song, station], function (err, moreResults) {
-        rotationItem = new RotationItem({ _song: song.id,
-                                        _station: station.id,
-                                        currentBin: 'trash',
-                                        currentWeight: 45 });
+        rotationItem = new RotationItem({ _song: song._id,
+                                          _station: station._id,
+                                          bin: 'trash',
+                                          weight: 45 });
         rotationItem.save(function (err) {
           done();
         }); 
@@ -36,29 +36,30 @@ describe('a rotationItem', function () {
   });
 
   it("stores a song's station, song, current weight and bin", function (done) {
-    expect(rotationItem.currentBin).to.equal('trash');
-    expect(rotationItem.currentWeight).to.equal(45);
-    RotationItem.findByIdAndPopulate(rotationItem, function (item) {
-      expect(item.station.id).to.equal(station.id);
-      expect(item.song.id).to.equal(song.id);
-      expect(item.song.title).to.equal('stepladder');
+    expect(rotationItem.bin).to.equal('trash');
+    expect(rotationItem.weight).to.equal(45);
+    //expect(rotationItem._station).to.equal(station.id);
+    RotationItem.findByIdAndPopulate(rotationItem.id, function (err, item) {
+      expect(item._song.title).to.equal('Stepladder');
+      expect(item._song.id).to.equal(song.id);
+      expect(item._station.id).to.equal(station.id);
       done();   
     });
   });
 
-  xit("stores its station", function (done) {
-
+  it("can updated weight and log it's own history", function (done) {
+    var oldDate = rotationItem.assignedAt;
+    rotationItem.updateWeight(55, function (err, updatedItem) {
+      expect(err).to.equal(null);
+      expect(updatedItem.history[0].weight).to.equal(45);
+      expect(updatedItem.assignedAt.getTime()).to.equal(oldDate.getTime());
+      done();
+    });
   });
 
-  xit("stores its song", function (done) {
+  xit("can update bin and log it's own history", function (done) {
 
   });
-
-  xit("can be updated and logs it's own history", function (done) {
-
-  });
-
-  xit("can be updated with only the weight")
 
   xit("does not update if ")
 });

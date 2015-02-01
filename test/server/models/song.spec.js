@@ -204,7 +204,6 @@ describe('a song', function () {
     });
     it ('returns a list of all songs in the database in the proper order', function (done) {
       Song.all(function (err, songList) {
-        debugger;
         expect(err).to.equal(null);
         expect(songList.length).to.equal(5);
         expect(songList[0].title).to.equal('Bar First');
