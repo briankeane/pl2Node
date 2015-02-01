@@ -10,14 +10,20 @@ describe('a user', function () {
   var user;
 
   beforeEach(function (done) {
-    User.remove(done)
-    user = new User({ twitter: 'BrianKeaneTunes',
-                      twitterUID: '756',
-                      email: 'lonesomewhistle@gmail.com',
-                      birthYear: 1977,
-                      gender: 'male',
-                      profileImageUrl: 'http://badass.jpg' });
-
+    db.connection.db.dropDatabase(function() {
+      user = new User({ twitter: 'BrianKeaneTunes',
+                        twitterUID: '756',
+                        email: 'lonesomewhistle@gmail.com',
+                        birthYear: 1977,
+                        gender: 'male',
+                        profileImageUrl: 'http://badass.jpg' });
+      station = new Station({ _user: user.id,
+                              secsOfCommercialPerHour: 150 });
+      station.save(function (err, savedStation) {
+        user._station = station.id;
+        done();
+      });
+    });
   });
 
   it ('is created with an id, twitter_uid, email, birth_year, gender, ' + 
@@ -65,9 +71,22 @@ describe('a user', function () {
         expect(gottenUser.email).to.equal('lonesomewhistle@gmail.com');
         expect(gottenUser.twitterUID).to.equal('756');
         done();
-      })
-    })
-  })
+      });
+    });
+  });
+
+  it ('can get its station', function (done) {
+    user.save(function (err, savedUser) {
+      User
+      .findById(savedUser.id)
+      .populate('_station')
+      .exec(function (err, foundUser) {
+        expect(err).to.equal(null);
+        expect(foundUser._station.secsOfCommercialPerHour).to.equal(150);
+        done();
+      });
+    });
+  });
 
   it ('can be updated', function (done) {
     user.save(function (err, savedUser) {

@@ -7,7 +7,8 @@ var userSchema = db.Schema({
   email:              { type: String },
   birthYear:          { type: Number },
   gender:             { type: String },
-  profileImageUrl:    { type: String }
+  profileImageUrl:    { type: String },
+  _station:           { type: db.Schema.ObjectId, ref: 'Station' }
 });
 
 
