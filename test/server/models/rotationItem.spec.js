@@ -74,7 +74,7 @@ describe('a rotationItem', function () {
     });
   });
 
-    it("updates both bin and weight and logs it's own history", function (done) {
+  it("updates both bin and weight and logs it's own history", function (done) {
     var oldDate = rotationItem.assignedAt;
     rotationItem.updateWeightAndBin(55, 'recycle', function (err, updatedItem) {
       expect(updatedItem.weight).to.equal(55);
@@ -86,5 +86,19 @@ describe('a rotationItem', function () {
       done();
     });
   });
-  xit("does not update if ")
+
+  it("does not update if weight and bin are the same", function (done) {
+    rotationItem.updateWeight(45, function (err, updatedItem) {
+      expect(updatedItem.history.length).to.equal(0);
+      rotationItem.updateBin('trash', function (err, updatedItem) {
+        expect(updatedItem.history.length).to.equal(0);
+        rotationItem.updateWeightAndBin(45,'trash', function (err, updatedItem) {
+          expect(updatedItem.weight).to.equal(45);
+          expect(updatedItem.bin).to.equal('trash');
+          expect(updatedItem.history.length).to.equal(0);
+          done();
+        });
+      });
+    });
+  });
 });
