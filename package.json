@@ -16,6 +16,7 @@
     "gulp-stylus": "^2.0.0",
     "gulp-uglify": "^1.1.0",
     "lodash": "^3.0.0",
+    "moment": "^2.9.0",
     "mongoose": "^3.8.22",
     "mongoose-schema-extend": "^0.1.7",
     "mongoose-timestamp": "^0.4.0"

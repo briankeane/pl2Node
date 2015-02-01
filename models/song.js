@@ -11,6 +11,10 @@ var songSchema = AudioBlockSchema.extend({
   itunesTrackViewUrl: { type: String }
 });
 
+// ***********************************************************
+// ******************** Common Queries ***********************
+// ***********************************************************
+
 songSchema.statics.findAllMatchingTitle = function (title, cb) {
   Song
   .find({ title: new RegExp('^'+title, "i") })
