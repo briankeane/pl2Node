@@ -54,6 +54,7 @@ describe('a rotationItem', function () {
       expect(updatedItem.history[0].weight).to.equal(45);
       expect(updatedItem.weight).to.equal(55);
       expect(updatedItem.bin).to.equal('trash');
+      expect(updatedItem.history[0].bin).to.equal('trash');
       expect(updatedItem.history[0].assignedAt.getTime()).to.equal(oldDate.getTime());
       expect(updatedItem.assignedAt.getTime()).to.be.above(oldDate.getTime());
       done();
@@ -66,11 +67,24 @@ describe('a rotationItem', function () {
       expect(updatedItem.weight).to.equal(45);
       expect(updatedItem.bin).to.equal('recycle');
       expect(updatedItem.history[0].weight).to.equal(45);
+      expect(updatedItem.history[0].bin).to.equal('trash');
       expect(updatedItem.history[0].assignedAt.getTime()).to.equal(oldDate.getTime());
       expect(updatedItem.assignedAt.getTime()).to.be.above(oldDate.getTime());
       done();
     });
   });
 
+    it("updates both bin and weight and logs it's own history", function (done) {
+    var oldDate = rotationItem.assignedAt;
+    rotationItem.updateWeightAndBin(55, 'recycle', function (err, updatedItem) {
+      expect(updatedItem.weight).to.equal(55);
+      expect(updatedItem.bin).to.equal('recycle');
+      expect(updatedItem.history[0].bin).to.equal('trash');
+      expect(updatedItem.history[0].weight).to.equal(45);
+      expect(updatedItem.history[0].assignedAt.getTime()).to.equal(oldDate.getTime());
+      expect(updatedItem.assignedAt.getTime()).to.be.above(oldDate.getTime());
+      done();
+    });
+  });
   xit("does not update if ")
 });

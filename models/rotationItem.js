@@ -81,7 +81,21 @@ rotationItemSchema.methods.updateBin = function (bin, callback) {
 }
 
 rotationItemSchema.methods.updateWeightAndBin = function (weight, bin, callback) {
-  callback();
+  // do nothing if there is no change
+  if ((this.bin == bin) && (this.weight == weight)) {
+    callback(null, this);
+  } else {
+    // store the old values in history array
+    this.history.push({ bin: this.bin,
+                        weight: this.weight,
+                        assignedAt: this.assignedAt });
+
+    // update new values
+    this.bin = bin;
+    this.weight = weight;
+    this.assignedAt = Date.now();
+    this.save(callback);
+  }
 }
 
 rotationItemSchema.plugin(timestamps);
