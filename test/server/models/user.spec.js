@@ -16,6 +16,7 @@ describe('a user', function () {
                         email: 'lonesomewhistle@gmail.com',
                         birthYear: 1977,
                         gender: 'male',
+                        zipcode: '78748',
                         profileImageUrl: 'http://badass.jpg' });
       station = new Station({ _user: user.id,
                               secsOfCommercialPerHour: 150 });
@@ -33,6 +34,7 @@ describe('a user', function () {
     expect(user.email).to.equal('lonesomewhistle@gmail.com');
     expect(user.birthYear).to.equal(1977);
     expect(user.gender).to.equal('male');
+    expect(user.zipcode).to.equal('78748');
     expect(user.profileImageUrl).to.equal('http://badass.jpg');
     done();
   });
@@ -95,12 +97,14 @@ describe('a user', function () {
                                                 email: 'new@gmail.com',
                                                 birthYear: 1990,
                                                 gender: 'chick',
+                                                zipcode: '37217',
                                                 profileImageUrl: 'http://dumbass.jpg' } }, function (err, updatedUser) {
         expect(err).to.equal(null);
         expect(updatedUser.twitter).to.equal('newTwitter');
         expect(updatedUser.twitterUID).to.equal('999');
         expect(updatedUser.email).to.equal('new@gmail.com');
         expect(updatedUser.birthYear).to.equal(1990);
+        expect(updatedUser.zipcode).to.equal('37217');
         expect(updatedUser.gender).to.equal('chick');
         expect(updatedUser.profileImageUrl).to.equal('http://dumbass.jpg');
         done();
