@@ -194,7 +194,20 @@ describe('playlist functions', function (done) {
     });
   });
 
+  it('gets a partial playlist with only startTime', function (done) {
+    Spin.getPartialPlaylist({ _station: station.id,
+                              startTime: new Date(2014,1,1,10,5) 
+                            }, function (err, partialPlaylist) {
+      expect(partialPlaylist.length).to.equal(18);
+      expect(partialPlaylist[0].playlistPosition).to.equal(3);
+      expect(partialPlaylist[17].playlistPosition).to.equal(20);
+      done();
+    });
+  });
+
   xit("gets a partial playlist by starting playlistPosition", function (done) {
+    Spin.getPartialPlaylist({ _station: station.id,
+                              })
   });
 
   xit("gets a pratial playtlist by starting and ending playlistPositions", function (done) {
