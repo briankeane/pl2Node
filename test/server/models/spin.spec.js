@@ -162,11 +162,29 @@ describe('playlist functions', function (done) {
     });
   });
 
-  xit("gets a partial playlist from the beginning", function (done) {
+  it("gets a partial playlist with endTime and startTime", function (done) {
+    Spin.getPartialPlaylist({ _station: station.id,
+                              startTime: new Date(2014,1,1,10,5),
+                              endTime: new Date(2014,1,1,10,15)
+                            }, function (err, partialPlaylist) {
+                              debugger;
+      expect(partialPlaylist.length).to.equal(4);
+      expect(partialPlaylist[0].playlistPosition).to.equal(3);
+      expect(partialPlaylist[3].playlistPosition).to.equal(6);
+      Spin.getPartialPlaylist({ _station: station.id,
+                                startTime: new Date(2014,1,1,10,10),
+                                endTime: new Date (2014,1,1,10,16) 
+                                }, function (err, partialPlaylist) {
+        expect(partialPlaylist.length).to.equal(2);
+        expect(partialPlaylist[0].playlistPosition).to.equal(5);
+        expect(partialPlaylist[1].playlistPosition).to.equal(6);
+        done();
+      });
+    });
   });
 
-  xit('gets a partial playlist until the end', function (done) {
-
+  xit('gets a partial playlist with only endTime', function (done) {
+    
   });
 
   xit("gets a partial playlist by starting playlistPosition", function (done) {

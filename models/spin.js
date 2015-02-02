@@ -71,6 +71,25 @@ spinSchema.statics.getFullPlaylist = function (stationId, callback) {
   .exec(callback);
 };
 
+spinSchema.statics.getPartialPlaylist = function (attrs, callback) {
+  var query = { $and: [{ _station: attrs._station}] };
+  
+  // add endTime limit to query
+  if (attrs.endTime) {
+    query['$and'].push({ airtime: { $lte: attrs.endTime } });
+  }
+
+  // add startTime limit to query
+  if (attrs.startTime) {
+    query['$and'].push({ airtime: { $gte: attrs.startTime } });
+  }
+
+  Spin
+  .find(query)
+  .sort('playlistPosition')
+  .exec(callback);
+}
+
 spinSchema.plugin(timestamps);
 var Spin = db.model('Spin', spinSchema);
 module.exports = Spin;
