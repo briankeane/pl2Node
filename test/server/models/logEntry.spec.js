@@ -97,6 +97,15 @@ describe('Log Methods', function (done){
       expect(gottenEntries[29].playlistPosition).to.equal(76);
       done();
     });
+
+    it('can get a logEntry by its playlistPosition and _station', function (done) {
+      LogEntry.getEntryByPlaylistPosition({ _station: station.id,
+                                            playlistPosition: 76
+                                          }, function (err, entry) {
+        expect(entry.id.equals(logEntries[0].id)).to.equal(true);
+        done();
+      });
+    });
   });
 });
     

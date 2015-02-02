@@ -50,14 +50,50 @@ logEntrySchema.statics.getRecent = function (attrs, callback) {
   .sort('-playlistPosition')
   .limit(attrs.count)
   .exec(callback);
-}
+};
 
 logEntrySchema.statics.getFullStationLog = function (stationId, callback) {
   LogEntry
   .find({ _station: stationId })
   .sort('-playlistPosition')
   .exec(callback);
-}
+};
+
+logEntrySchema.statics.getLog = function (attrs, callback) {
+  var query = { $and: [{ _station: attrs._station}] };
+  
+  // add endTime limit to query
+  if (attrs.endTime) {
+    query['$and'].push({ airtime: { $lte: attrs.endTime } });
+  }
+
+  // add startTime limit to query
+  if (attrs.startTime) {
+    query['$and'].push({ airtime: { $gte: attrs.startTime } });
+  }
+
+  // add startingPlaylistPosition limit to query
+  if (attrs.startingPlaylistPosition) {
+    query['$and'].push({ playlistPosition: { $gte: attrs.startingPlaylistPosition } });
+  }
+
+  // add endingPlaylistPosition limit to query
+  if (attrs.endingPlaylistPosition) {
+    query['$and'].push({ playlistPosition: { $lte: attrs.endingPlaylistPosition } });
+  }
+
+  Log
+  .find(query)
+  .sort('-playlistPosition')
+  .exec(callback);
+};
+
+logEntrySchema.statics.getEntryByPlaylistPosition = function (attrs, callback) {
+  Log
+  .findOne({ _station: attrs._station }, { playlistPosition: attrs.playlistPosition })
+  .sort('-playlistPosition')
+  .exec(callback);
+};
 
 
 logEntrySchema.plugin(timestamps);
