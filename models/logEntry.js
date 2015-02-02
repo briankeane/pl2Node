@@ -39,6 +39,18 @@ logEntrySchema.virtual('duration').get(function () {
   }
 });
 
+logEntrySchema.statics.getRecent = function (attrs, callback) {
+  // if there's no count, set the limit 
+  if (!attrs.count) { 
+    attrs.count = 1000; 
+  }
+
+  LogEntry
+  .find({ _station: attrs._station })
+  .sort('-playlistPosition')
+  .limit(attrs.count)
+  .exec(callback);
+}
 
 
 logEntrySchema.plugin(timestamps);

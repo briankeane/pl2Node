@@ -14,18 +14,21 @@ describe('a logEntry', function (done) {
   var logEntry;
   
   beforeEach(function (done) {
-    station = new Station ({ });  
-    song  = new Song({ duration: 1000 });
-    specHelper.saveAll([station, song], function (err, savedModels) {
-      logEntry = new LogEntry({ _station: station.id,
-                                playlistPosition: 76,
-                                _audioBlock: song.id,
-                                airtime: new Date(1983,4,15,18),
-                                listenersAtStart: 55,
-                                listenersAtFinish: 57,
-                                durationOffset: 10 });
-      logEntry.save(function (err, savedLogEntry) {
-        done();
+    specHelper.clearDatabase(function () {
+      
+      station = new Station ({ });  
+      song  = new Song({ duration: 1000 });
+      specHelper.saveAll([station, song], function (err, savedModels) {
+        logEntry = new LogEntry({ _station: station.id,
+                                  playlistPosition: 76,
+                                  _audioBlock: song.id,
+                                  airtime: new Date(1983,4,15,18),
+                                  listenersAtStart: 55,
+                                  listenersAtFinish: 57,
+                                  durationOffset: 10 });
+        logEntry.save(function (err, savedLogEntry) {
+          done();
+        });
       });
     });
   });
@@ -49,3 +52,43 @@ describe('a logEntry', function (done) {
     });
   });
 });
+
+describe('Log Methods', function (done){
+  var logEntries = [];
+  var song = [];
+  var station;
+  
+  beforeEach(function (done) {
+
+    specHelper.clearDatabase(function () {
+      station = new Station({});
+      station.save(function (err, savedStation) {
+        song = new Song({ duration: 180000 });
+        song.save(function (err, savedSong) {
+          for (var i=0;i<30;i++) {
+            logEntries.push(new LogEntry({  _station: station.id,
+                                            _audioBlock: song.id,
+                                            playlistPosition: 76 + i,
+                                            airtime: new Date(new Date(1983,4,15,18).getTime() + (i*360000)),
+                                            listenersAtStart: i + 55,
+                                            listenersAtFinish: i+57 }));
+          }
+          specHelper.saveAll(logEntries, function (err, savedLogEntries) {
+            done();
+          });
+        });
+      })
+    });
+  });
+
+  it('can get recent entries', function (done) {
+    LogEntry.getRecent({ _station: station.id, count: 15 }, function (err, gottenEntries) {
+      expect(gottenEntries.length).to.equal(15);
+      debugger;
+      expect(gottenEntries[0].playlistPosition).to.equal(105);
+      expect(gottenEntries[14].playlistPosition).to.equal(91);
+      done();
+    });
+  });
+});
+    
