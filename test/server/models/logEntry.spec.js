@@ -40,4 +40,12 @@ describe('a logEntry', function (done) {
     expect(logEntry.durationOffset).to.equal(10);
     done();
   });
+
+  it('calculates duration and endTime', function (done) {
+    logEntry.populate('_audioBlock', function (err, foundLogEntry) {
+      expect(logEntry.duration).to.equal(1010);
+      expect(logEntry.endTime.getTime()).to.equal(new Date(1983,4,15,18,00,01,10).getTime());
+      done();
+    });
+  });
 });
