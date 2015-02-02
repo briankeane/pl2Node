@@ -133,7 +133,7 @@ describe('playlist functions', function (done) {
       for (var i=0;i<20;i++) {
         songs.push(new Song({ title: "Song #:" + i }));
       }
-      specHelper.saveAll(function (err, savedSongs) {
+      specHelper.saveAll(songs, function (err, savedSongs) {
         station = new Station({});
         station.save(function (err, savedStation) {
           startingAirtime = new Date(2014,1,1,10);
@@ -152,7 +152,14 @@ describe('playlist functions', function (done) {
     });
   });
 
-  xit("returns the playlist in the correct order", function (done) {
+  it("returns the playlist in the correct order", function (done) {
+    Spin.getFullPlaylist(station.id, function (err, gottenPlaylist) {
+      expect(gottenPlaylist.length).to.equal(20);
+      expect(gottenPlaylist[0].playlistPosition).to.equal(1);
+      expect(gottenPlaylist[2].playlistPosition).to.equal(3);
+      expect(gottenPlaylist[3].playlistPosition).to.equal(4);
+      done();
+    });
   });
 
   xit("gets a partial playlist from the beginning", function (done) {

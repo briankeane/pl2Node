@@ -59,6 +59,18 @@ spinSchema.virtual('commercialsFollow').get(function () {
   }
 });
 
+
+// ****************************************************************
+// ********************** Playlist Functions **********************
+// ****************************************************************
+
+spinSchema.statics.getFullPlaylist = function (stationId, callback) {
+  Spin
+  .find({ _station: stationId })
+  .sort('playlistPosition')
+  .exec(callback);
+};
+
 spinSchema.plugin(timestamps);
 var Spin = db.model('Spin', spinSchema);
 module.exports = Spin;
