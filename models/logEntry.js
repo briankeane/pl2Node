@@ -52,6 +52,13 @@ logEntrySchema.statics.getRecent = function (attrs, callback) {
   .exec(callback);
 }
 
+logEntrySchema.statics.getFullStationLog = function (stationId, callback) {
+  LogEntry
+  .find({ _station: stationId })
+  .sort('-playlistPosition')
+  .exec(callback);
+}
+
 
 logEntrySchema.plugin(timestamps);
 var LogEntry = db.model('LogEntry', logEntrySchema);

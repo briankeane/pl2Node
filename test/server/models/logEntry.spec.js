@@ -84,9 +84,17 @@ describe('Log Methods', function (done){
   it('can get recent entries', function (done) {
     LogEntry.getRecent({ _station: station.id, count: 15 }, function (err, gottenEntries) {
       expect(gottenEntries.length).to.equal(15);
-      debugger;
       expect(gottenEntries[0].playlistPosition).to.equal(105);
       expect(gottenEntries[14].playlistPosition).to.equal(91);
+      done();
+    });
+  });
+
+    it('can get the full station log', function (done) {
+    LogEntry.getFullStationLog(station.id, function (err, gottenEntries) {
+      expect(gottenEntries.length).to.equal(30);
+      expect(gottenEntries[0].playlistPosition).to.equal(105);
+      expect(gottenEntries[29].playlistPosition).to.equal(76);
       done();
     });
   });
