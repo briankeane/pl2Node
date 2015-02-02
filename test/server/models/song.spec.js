@@ -3,12 +3,13 @@ var User = require('../../../models/user');
 var Song = require('../../../models/song');
 var expect = require('chai').expect;
 var async = require('async');
+var specHelper = require('../specHelper');
 
 describe('a song', function () {
   var song;
 
   beforeEach(function (done) {
-    db.connection.db.dropDatabase(function() {
+    specHelper.clearDatabase(function() {
       song = new Song({ artist: 'Rachel Loy',
                         title: 'Stepladder',
                         album: 'Broken Machine',

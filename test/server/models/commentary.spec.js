@@ -3,6 +3,7 @@ var Station = require('../../../models/station');
 var Commentary = require('../../../models/commentary');
 var expect = require('chai').expect;
 var async = require('async');
+var specHelper = require('../specHelper');
 
 describe('a commentary', function (done) { 
   var song;
@@ -10,7 +11,7 @@ describe('a commentary', function (done) {
   var commentary;
 
   beforeEach(function (done) {
-    db.connection.db.dropDatabase(function() {
+    specHelper.clearDatabase(function() {
 
       station = new Station ({ timezone: 'US Central Time',
                                secsOfCommercialPerHour: 180 });

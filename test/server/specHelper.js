@@ -1,5 +1,13 @@
 var async = require('async');
 var db = require('../../db');
+var audioBlockSchema = require('../../models/audioBlockSchema');
+var AudioBlock = db.model('AudioBlock', audioBlockSchema);
+var Commentary = require('../../models/commentary');
+var RotationItem = require('../../models/rotationItem');
+var Song = require('../../models/song');
+var Spin = require('../../models/spin');
+var Station = require('../../models/station');
+var User = require('../../models/user');
 
 var helper = {};
 
@@ -19,7 +27,9 @@ helper.saveAll = function (objects, callback) {
   });
 };
 
-helper.clearModels = function (models, callback) {
+helper.clearDatabase = function (callback) {
+  models = [AudioBlock, RotationItem, Spin, Station, User]
+
   var functions = [];
 
   for (var i=0; i < models.length; i++) {

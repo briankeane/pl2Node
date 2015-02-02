@@ -12,7 +12,7 @@ describe('a station', function () {
   var station;
 
   beforeEach(function (done) {
-    db.connection.db.dropDatabase(function() {
+    specHelper.clearDatabase(function() {
       song = new Song({ artist: 'Rachel Loy',
                         title: 'Stepladder',
                         album: 'Broken Machine',

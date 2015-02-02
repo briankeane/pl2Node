@@ -13,7 +13,7 @@ describe('a spin', function (done) {
   var commentary;
 
   beforeEach(function (done) {
-    db.connection.db.dropDatabase(function() {
+    specHelper.clearDatabase(function() {
       station = new Station ({ timezone: 'US Central Time',
                                secsOfCommercialPerHour: 180 });
 
@@ -71,6 +71,10 @@ describe('a spin', function (done) {
     });
   });
 
+  xit("can be updated", function (done) {
+
+  });
+
   it("calculates it's duration & returns null if not populated", function (done) {
     expect(spin1.duration).to.equal(null);  // null before population
     
@@ -113,5 +117,63 @@ describe('a spin', function (done) {
         });
       });
     });
+  });
+});
+
+describe('playlist functions', function (done) {
+  var spins;
+  var station;
+  var songs;
+
+  beforeEach(function (done) {
+    songs = [];
+    spins = [];
+
+    specHelper.clearDatabase(function() {
+      for (var i=0;i<20;i++) {
+        songs.push(new Song({ title: "Song #:" + i }));
+      }
+      specHelper.saveAll(function (err, savedSongs) {
+        station = new Station({});
+        station.save(function (err, savedStation) {
+          startingAirtime = new Date(2014,1,1,10);
+          for (var i=0;i<20;i++) {
+            spins.push(new Spin({ _station: station.id,
+                                  playlistPosition: i+1,
+                                  _audioBlock: songs[i].id, 
+                                  airtime: startingAirtime }));
+            startingAirtime = new Date(startingAirtime.getTime() + 180000);
+          }
+          specHelper.saveAll(spins, function (err, savedSpins) {
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  xit("returns the playlist in the correct order", function (done) {
+  });
+
+  xit("gets a partial playlist from the beginning", function (done) {
+  });
+
+  xit('gets a partial playlist until the end', function (done) {
+
+  });
+
+  xit("gets a partial playlist by starting playlistPosition", function (done) {
+  });
+
+  xit("gets a pratial playtlist by starting and ending playlistPositions", function (done) {
+
+  });
+
+  xit("it gets the final spin", function (done) {
+
+  });
+
+  xit("gets a spin by playlistPosition", function (done) {
+
   });
 });

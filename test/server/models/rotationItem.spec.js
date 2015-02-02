@@ -5,6 +5,7 @@ var Station = require('../../../models/station');
 var RotationItem = require('../../../models/rotationItem');
 var expect = require('chai').expect;
 var async = require('async');
+var specHelper = require('../specHelper');
 
 
 describe('a rotationItem', function () {
@@ -13,7 +14,7 @@ describe('a rotationItem', function () {
   var station;
 
   beforeEach(function (done) {
-    db.connection.db.dropDatabase(function() {
+    specHelper.clearDatabase(function() {
       song = new Song({ artist: 'Rachel Loy',
                         title: 'Stepladder',
                         album: 'Broken Machine',

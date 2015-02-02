@@ -38,6 +38,14 @@ spinSchema.virtual('duration').get(function () {
   }
 });
 
+
+// ****************************************************************
+// ********************** commercialsFollow ***********************
+// ****************************************************************
+// * Commercials are placed after the top and bottom of           *
+// * the hour.  This method checks to see if the spin crosses     *
+// * over the hour or half-hour mark                              *
+// ****************************************************************
 spinSchema.virtual('commercialsFollow').get(function () {
   if (!(this.airtime) || !(this.duration)) {
     return null;

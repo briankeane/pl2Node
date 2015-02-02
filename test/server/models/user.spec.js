@@ -3,6 +3,7 @@ var User = require('../../../models/user');
 var Station = require('../../../models/station');
 var expect = require('chai').expect;
 var async = require('async');
+var specHelper = require('../specHelper');
 
 
 
@@ -10,7 +11,7 @@ describe('a user', function () {
   var user;
 
   beforeEach(function (done) {
-    db.connection.db.dropDatabase(function() {
+    specHelper.clearDatabase(function() {
       user = new User({ twitter: 'BrianKeaneTunes',
                         twitterUID: '756',
                         email: 'lonesomewhistle@gmail.com',
