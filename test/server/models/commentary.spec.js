@@ -37,5 +37,15 @@ describe('a commentary', function (done) {
       done();
     });
   });
+
+  it("can be updated", function (done) {
+    Commentary.findByIdAndUpdate(commentary.id, { $set: { key: 'otherkey',
+                                                          duration: 200 } 
+    }, function (err, updatedCommentary) {
+      expect(updatedCommentary.key).to.equal('otherkey');
+      expect(updatedCommentary.duration).to.equal(200);
+      done();
+    });
+  });
   
 });
