@@ -8,26 +8,18 @@ describe('a song', function () {
   var song;
 
   beforeEach(function (done) {
-    Song.remove({}, function (err) {
+    db.connection.db.dropDatabase(function() {
       song = new Song({ artist: 'Rachel Loy',
                         title: 'Stepladder',
                         album: 'Broken Machine',
                         duration: 180000,
                         key: 'ThisIsAKey.mp3',
                         echonestId: 'ECHONEST_ID' });
-      done();
+      song.save(function (err, savedSong) {
+        done();
+      });
     });
   });
-
-  it ('can be created but not saved', function (done) {
-      expect(song.artist).to.equal('Rachel Loy');
-      expect(song.title).to.equal('Stepladder');
-      expect(song.album).to.equal('Broken Machine');
-      expect(song.duration).to.equal(180000);
-      expect(song.key).to.equal('ThisIsAKey.mp3');
-      expect(song.echonestId).to.equal('ECHONEST_ID');
-      done();
-    });
 
   it ('persists a song', function (done) {
     song.save(function (err, user) {

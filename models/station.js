@@ -7,11 +7,10 @@ var stationSchema = db.Schema({
   secsOfCommercialPerHour:                { type: Number },
   lastAccurateCurrentPosition:            { type: Number },
   averageDailyListeners:                  { type: Number },
+  timezone:                               { type: String },
   averageDailyListenersCalculationDate:   { type: Date }
 });
 
-
 stationSchema.plugin(timestamps);
-
 var Station = db.model('Station', stationSchema);
 module.exports = Station;

@@ -10,7 +10,7 @@ describe('a song', function () {
   var song;
 
   beforeEach(function (done) {
-    Song.remove({}, function (err) {
+    db.connection.db.dropDatabase(function() {
       song = new Song({ artist: 'Rachel Loy',
                         title: 'Stepladder',
                         album: 'Broken Machine',
