@@ -205,11 +205,20 @@ describe('playlist functions', function (done) {
     });
   });
 
-  xit("gets a partial playlist by starting playlistPosition", function (done) {
+  it("gets a partial playlist by starting playlistPosition", function (done) {
     Spin.getPartialPlaylist({ _station: station.id,
-                              })
+                              startingPlaylistPosition: 10
+                             }, function (err, partialPlaylist) {
+      expect(partialPlaylist.length).to.equal(11);
+      expect(partialPlaylist[0].playlistPosition).to.equal(10);
+      expect(partialPlaylist[10].playlistPosition).to.equal(20);
+      done();
+    });
   });
 
+  xit("gets a partial playlist by ending playlistPosition", function (done) {
+
+  })
   xit("gets a pratial playtlist by starting and ending playlistPositions", function (done) {
 
   });

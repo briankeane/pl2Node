@@ -84,6 +84,11 @@ spinSchema.statics.getPartialPlaylist = function (attrs, callback) {
     query['$and'].push({ airtime: { $gte: attrs.startTime } });
   }
 
+  // add startingPlaylistPosition limit to query
+  if (attrs.startingPlaylistPosition) {
+    query['$and'].push({ playlistPosition: { $gte: attrs.startingPlaylistPosition } });
+  }
+
   Spin
   .find(query)
   .sort('playlistPosition')
