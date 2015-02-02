@@ -2,6 +2,7 @@ var async = require('async');
 var db = require('../../db');
 var audioBlockSchema = require('../../models/audioBlockSchema');
 var AudioBlock = db.model('AudioBlock', audioBlockSchema);
+var LogEntry = require('../../models/logEntry');
 var Commentary = require('../../models/commentary');
 var RotationItem = require('../../models/rotationItem');
 var Song = require('../../models/song');
@@ -28,7 +29,14 @@ helper.saveAll = function (objects, callback) {
 };
 
 helper.clearDatabase = function (callback) {
-  models = [AudioBlock, RotationItem, Spin, Station, User]
+  models = [
+            AudioBlock, 
+            RotationItem, 
+            Spin, 
+            Station, 
+            User,
+            LogEntry
+            ]
 
   var functions = [];
 

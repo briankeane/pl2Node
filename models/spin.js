@@ -33,7 +33,7 @@ spinSchema.virtual('duration').get(function () {
     if (this._audioBlock.duration) {
       return this._audioBlock.duration + this.durationOffset;
     } else {
-      return null;                    // Is this proper treatment?
+      return null;
     } 
   }
 });

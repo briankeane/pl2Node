@@ -237,12 +237,4 @@ describe('playlist functions', function (done) {
       done();
     });
   });
-
-  xit("it gets the final spin", function (done) {
-
-  });
-
-  xit("gets a spin by playlistPosition", function (done) {
-
-  });
 });
