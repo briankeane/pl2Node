@@ -1,27 +1,16 @@
-var db = require('../../../db');
-var Song = require('../../../models/song');
-var Commentary = require('../../../models/commentary');
-var expect - require('chai').expect;
-var specHelper = require('../specHelper');
+var db = require('../db');
+var Station = require('./station');
+var audioBlockSchema = require('./audioBlockSchema');
+var AudioBlock = db.model('AudioBlock', audioBlockSchema);
+var timestamps = require('mongoose-timestamp');
 
-describe('a song', function () {
-  var song;
-
-  beforeEach(function (done) {
-    db.connection.db.dropDatabase(function() {
-      song = new Song({ artist: 'Rachel Loy',
-                        title: 'Stepladder',
-                        album: 'Broken Machine',
-                        duration: 180000,
-                        key: 'ThisIsAKey.mp3',
-                        echonestId: 'ECHONEST_ID' });
-      commentary = new Commentary({ })
-      commercial = new CommercialBlock({ duration: 18000 });
-
-      song.save(function (err, savedSong) {
-        done();
-      });
-    });
-  });
+var spinSchema = db.Schema({
+  airtime:            { type: Date },
+  playlistPosition:   { type: Number },
+  _audioBlock:        { type: db.Schema.ObjectId, ref: 'AudioBlock' },
+  _station:           { type: db.Schema.ObjectId, ref: 'Station' }
 });
 
+spinSchema.plugin(timestamps);
+var Spin = db.model('Spin', spinSchema);
+module.exports = Spin;

@@ -47,5 +47,4 @@ describe('a commentary', function (done) {
       done();
     });
   });
-  
 });
