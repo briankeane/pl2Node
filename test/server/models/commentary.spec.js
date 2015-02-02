@@ -1,36 +1,41 @@
-// var db = require('../../../db');
-// var User = require('../../../models/user');
-// var Commentary = require('../../../models/commentary');
-// var expect = require('chai').expect;
-// var async = require('async');
+var db = require('../../../db');
+var Station = require('../../../models/station');
+var Commentary = require('../../../models/commentary');
+var expect = require('chai').expect;
+var async = require('async');
 
-// describe('a song', function () {
-//   var commentary;
+describe('a commentary', function (done) { 
+  var song;
+  var station;
+  var commentary;
 
-//   beforeEach(function (done) {
-//     Commentary.remove({}, function (err) {
-//       commentary = new Commentary({  duration: 180000,
-//                                      key: 'ThisIsAKey.mp3',
-//                                      echonestId: 'ECHONEST_ID' });
-//       commentary.save(function (err, commentary) {
-//         done();
-//       });
-//     });
-//   });
+  beforeEach(function (done) {
+    db.connection.db.dropDatabase(function() {
 
-//   it('can be created and retrieved', function (done) {
-//     Commentary.findById(commentary.id, function (err, foundCommentary) {
-//       expect(err).to.equal(null);
-//       expect(foundCommentary.id).to.equal(commentary.id);
-//       expect(foundCommentary.)
-//       done();
-//     });
-//   });
+      station = new Station ({ timezone: 'US Central Time',
+                               secsOfCommercialPerHour: 180 });
 
-//   xit('can be updated', function (done) {
+      station.save(function (err, savedStation) {
+        commentary = new Commentary({ _station: station.id,
+                                       key: 'commentarykey.mp3',
+                                       duration: 100 });
 
-//   });
-//   xit('can be deleted', function (done) {
+        commentary.save(function (err, savedCommentary) {
+          done();
+        });
+      });
+    });
+  });
 
-//   });
-// });
+  it("is created with id, key, duration, and populatable station", function (done) {
+    Commentary.findById(commentary.id)
+    .populate('_station')
+    .exec(function (err, foundCommentary) {
+      expect(foundCommentary.key).to.equal('commentarykey.mp3');
+      expect(foundCommentary.duration).to.equal(100);
+      expect(foundCommentary._station.secsOfCommercialPerHour).to.equal(180);
+      done();
+    });
+  });
+  
+});
