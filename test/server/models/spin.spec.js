@@ -167,7 +167,6 @@ describe('playlist functions', function (done) {
                               startTime: new Date(2014,1,1,10,5),
                               endTime: new Date(2014,1,1,10,15)
                             }, function (err, partialPlaylist) {
-                              debugger;
       expect(partialPlaylist.length).to.equal(4);
       expect(partialPlaylist[0].playlistPosition).to.equal(3);
       expect(partialPlaylist[3].playlistPosition).to.equal(6);
@@ -216,11 +215,27 @@ describe('playlist functions', function (done) {
     });
   });
 
-  xit("gets a partial playlist by ending playlistPosition", function (done) {
+  it("gets a partial playlist by ending playlistPosition", function (done) {
+    Spin.getPartialPlaylist({ _station: station.id,
+                              endingPlaylistPosition: 10
+                             }, function (err, partialPlaylist) {
+      expect(partialPlaylist.length).to.equal(10);
+      expect(partialPlaylist[0].playlistPosition).to.equal(1);
+      expect(partialPlaylist[9].playlistPosition).to.equal(10);
+      done();
+    });
+  });
 
-  })
-  xit("gets a pratial playtlist by starting and ending playlistPositions", function (done) {
-
+  it("gets a pratial playtlist by starting and ending playlistPositions", function (done) {
+    Spin.getPartialPlaylist({ _station: station.id,
+                              startingPlaylistPosition: 10,
+                              endingPlaylistPosition: 15
+                             }, function (err, partialPlaylist) {
+      expect(partialPlaylist.length).to.equal(6);
+      expect(partialPlaylist[0].playlistPosition).to.equal(10);
+      expect(partialPlaylist[5].playlistPosition).to.equal(15);
+      done();
+    });
   });
 
   xit("it gets the final spin", function (done) {
