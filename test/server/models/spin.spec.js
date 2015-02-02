@@ -52,16 +52,23 @@ describe('a spin', function (done) {
   });
 
   it('is created with playlistPosition, airtime, and populatable station & audioBlock', function (done) {
-    Spin.find()
+    Spin.findById(spin1)
     .populate('_station _audioBlock')
-    .exec(function (err, foundSpins) {
-      expect(foundSpins[0].playlistPosition).to.equal(2)
-      expect(foundSpins[0]._audioBlock.title).to.equal('Stepladder');
-      expect(foundSpins[0]._station.timezone).to.equal('US Central Time');
-      expect(foundSpins[1]._audioBlock.key).to.equal('commentarykey.mp3');
-      expect(foundSpins[0].airtime.getTime()).to.equal(new Date(2014,1,1,12).getTime());
-      done();
-    })
-
+    .exec(function (err, foundSpin) {
+      expect(foundSpin.playlistPosition).to.equal(2)
+      expect(foundSpin._audioBlock.title).to.equal('Stepladder');
+      expect(foundSpin._station.timezone).to.equal('US Central Time');
+      expect(foundSpin.airtime.getTime()).to.equal(new Date(2014,1,1,12).getTime());
+      Spin.findById(spin2)
+      .populate('_station _audioBlock')
+      .exec(function (err, foundSpin) {
+        expect(foundSpin._audioBlock.key).to.equal('commentarykey.mp3');
+        done();
+      })
+    });
   });
+
+  it("caluclates it's endTime", function (done) {
+    expect(spin1.endTime.getTime()).to.equal(20)
+  })
 });
