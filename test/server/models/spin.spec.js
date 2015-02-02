@@ -96,4 +96,22 @@ describe('a spin', function (done) {
       done();
     });
   });
+
+  it('can tell if a commercial follows', function (done) {
+    expect(spin1.commercialsFollow).to.equal(null);
+    spin1.airtime = new Date(2014,1,1,12,1);   // set date for no commercial
+    spin1.save(function (spin1Saved) {
+      spin1.populate('_audioBlock', function (err, spin1Populated) {
+        expect(spin1.commercialsFollow).to.equal(false);
+        
+        spin1.airtime = new Date(2014,1,1,11,59);   // set date for commercial
+        spin1.save(function (spin1Saved) {
+          spin1.populate('_audioBlock', function (spin1Populated) {
+            expect(spin1.commercialsFollow).to.equal(true);
+            done();
+          });
+        });
+      });
+    });
+  });
 });

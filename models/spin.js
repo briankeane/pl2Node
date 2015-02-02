@@ -38,6 +38,19 @@ spinSchema.virtual('duration').get(function () {
   }
 });
 
+spinSchema.virtual('commercialsFollow').get(function () {
+  if (!(this.airtime) || !(this.duration)) {
+    return null;
+  } else {
+    // if beginning and end of spin are in different time 'blocks'
+    if (Math.floor(this.airtime.getTime()/1800000.0) != Math.floor(this.endTime.getTime()/1800000.0)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+});
+
 spinSchema.plugin(timestamps);
 var Spin = db.model('Spin', spinSchema);
 module.exports = Spin;
