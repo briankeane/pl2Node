@@ -99,7 +99,7 @@ logEntrySchema.statics.getLog = function (attrs, callback) {
 
   LogEntry
   .find(query)
-  .sort('-playlistPosition')
+  .sort('playlistPosition')
   .populate('_station _audioBlock')
   .exec(callback);
 };

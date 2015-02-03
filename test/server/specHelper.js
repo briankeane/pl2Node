@@ -1,3 +1,4 @@
+process.env.NODE_ENV="test";
 var async = require('async');
 var db = require('../../db');
 var audioBlockSchema = require('../../models/audioBlockSchema');

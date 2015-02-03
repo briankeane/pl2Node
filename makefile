@@ -1,7 +1,7 @@
 test:
 	@NODE_ENV=test mocha
 
-test debug:
+test-debug:
 	@NODE_ENV=test mocha
 
 test-w:

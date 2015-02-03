@@ -1,3 +1,4 @@
+process.env.NODE_ENV="test";
 var db = require('../../../db');
 var User = require('../../../models/user');
 var Song = require('../../../models/song');

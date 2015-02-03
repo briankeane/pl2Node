@@ -1,3 +1,4 @@
+process.env.NODE_ENV="test";
 var db = require('../../../db');
 var User = require('../../../models/user');
 var Station = require('../../../models/station');
@@ -23,7 +24,9 @@ describe('a user', function () {
                               secsOfCommercialPerHour: 150 });
       station.save(function (err, savedStation) {
         user._station = station.id;
-        done();
+        user.save(function (err, savedUser) {
+          done();
+        });
       });
     });
   });
@@ -124,28 +127,35 @@ describe('a user', function () {
       });
     });0
   });
+});
+
+describe('more user CRUD', function () {
+  var users;
+  
+  beforeEach(function (done) {
+    specHelper.clearDatabase(function () {
+      loadUsers(10, function (err, loadedUsers) {
+        users = loadedUsers;
+        done();
+      });
+    })
+  });
 
   it ('gets all users', function (done) {
-    // load the database 
-    loadUsers(10, function (err, users) {
-      expect(users[0].twitter).to.equal('bob0');
-      expect(users[4].twitter).to.equal('bob4');
-      expect(users.length).to.equal(10);
-      done();
-    });
-
+    expect(users[0].twitter).to.equal('bob0');
+    expect(users[4].twitter).to.equal('bob4');
+    expect(users.length).to.equal(10);
+    done();
   });
 
   it ('destroys all users', function (done) {
-    loadUsers(10, function (err, users) {
-      User.find({}, function (err, foundUsers) {
-        expect(err).to.equal(null);
-        expect(foundUsers.length).to.equal(10);
-        User.remove({}, function (err) {
-          User.find({}, function (err, users) {
-            expect(users.length).to.equal(0);
-            done();
-          });
+    User.find({}, function (err, foundUsers) {
+      expect(err).to.equal(null);
+      expect(foundUsers.length).to.equal(10);
+      User.remove({}, function (err) {
+        User.find({}, function (err, users) {
+          expect(users.length).to.equal(0);
+          done();
         });
       });
     });
@@ -153,12 +163,8 @@ describe('a user', function () {
 
   xit ('gets its station', function (done) {
     // to do
-  })
-
-  //describe('db-user-functions', function() {
-  //});
+  });
 });
-
 // loads the db with x number of records
 function loadUsers (desiredLength, callback) {
   var newUsers = [];

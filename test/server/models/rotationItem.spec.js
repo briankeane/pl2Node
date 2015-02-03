@@ -1,3 +1,4 @@
+process.env.NODE_ENV="test";
 var db = require('../../../db');
 var SpecHelper = require('../specHelper');
 var Song = require('../../../models/song');

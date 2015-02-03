@@ -1,3 +1,4 @@
+process.env.NODE_ENV="test";
 var db = require('../../../db');
 var Station = require('../../../models/station');
 var Commentary = require('../../../models/commentary');
