@@ -13,6 +13,7 @@ var Scheduler = require('../../../utilities/scheduler');
 var expect = require('chai').expect;
 var specHelper = require('../specHelper');
 var tk = require('timekeeper');
+var _ = require('lodash');
 
 describe('playlist functions', function (done) {
   var songs;
@@ -30,7 +31,7 @@ describe('playlist functions', function (done) {
                         zipcode: '78748',
                         profileImageUrl: 'http://badass.jpg' });
       station = new Station({ _user: user.id,
-                              secsOfCommercialPerHour: 150 });
+                              secsOfCommercialPerHour: 360 });
       station.save(function (err, savedStation) {
         user._station = station.id;
         user.save(function (err, savedUser) {
@@ -60,8 +61,8 @@ describe('playlist functions', function (done) {
 
             specHelper.saveAll(rotationItems, function (err, savedRotationItems) {
               rotationItems = savedRotationItems;
-              tk.travel(new Date(2014,3,15, 12,45));
-              Scheduler.generatePlaylist({ _station: station.id }, done);
+              tk.travel(new Date(2014,3,15, 12,46));
+              Scheduler.generatePlaylist({ station: station }, done);
             });
           });
         });
@@ -70,8 +71,12 @@ describe('playlist functions', function (done) {
   });
 
   it('generatePlaylist creates a first playlist', function (done) {
-    expect(true).to.equal(true);
-    done();
+    Spin.getFullPlaylist(station.id, function (err, spins) {
+      test = _.map(spins, function (spin) { return { audioBlockTitle: spin._audioBlock.title, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow } });
+      debugger;
+      expect(true).to.equal(true);
+      done();
+    })
   });
 
   after(function (done) {

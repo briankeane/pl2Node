@@ -10,6 +10,7 @@ var Song = require('../../models/song');
 var Spin = require('../../models/spin');
 var Station = require('../../models/station');
 var User = require('../../models/user');
+var _ = require('lodash');
 
 function Helper() {
   
@@ -67,8 +68,12 @@ function Helper() {
                             key: 'key#: '+ i,
                             echonestId: 'echonestId#:' + i }));
     }
-    debugger;
-    self.saveAll(songs, callback);
+    self.saveAll(songs, function (err, results) {
+      // originally results is [<Object>,1]... so convert it to just an array of objects
+      results = _.map(results, function (result) { return result[0] });
+
+      callback(err, results);
+    });
   }
 }
 
