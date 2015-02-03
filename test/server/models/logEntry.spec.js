@@ -90,21 +90,21 @@ describe('Log Methods', function (done){
     });
   });
 
-    it('can get the full station log', function (done) {
+  it('can get the full station log', function (done) {
     LogEntry.getFullStationLog(station.id, function (err, gottenEntries) {
       expect(gottenEntries.length).to.equal(30);
       expect(gottenEntries[0].playlistPosition).to.equal(105);
       expect(gottenEntries[29].playlistPosition).to.equal(76);
       done();
     });
+  });
 
-    it('can get a logEntry by its playlistPosition and _station', function (done) {
-      LogEntry.getEntryByPlaylistPosition({ _station: station.id,
-                                            playlistPosition: 76
-                                          }, function (err, entry) {
-        expect(entry.id.equals(logEntries[0].id)).to.equal(true);
-        done();
-      });
+  it('can get a logEntry by its playlistPosition and _station', function (done) {
+    LogEntry.getEntryByPlaylistPosition({ _station: station.id,
+                                          playlistPosition: 76
+                                        }, function (err, entry) {
+      expect(entry.listenersAtStart).to.equal(logEntries[0].listenersAtStart);
+      done();
     });
   });
 });

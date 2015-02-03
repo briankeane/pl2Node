@@ -89,9 +89,8 @@ logEntrySchema.statics.getLog = function (attrs, callback) {
 };
 
 logEntrySchema.statics.getEntryByPlaylistPosition = function (attrs, callback) {
-  Log
-  .findOne({ _station: attrs._station }, { playlistPosition: attrs.playlistPosition })
-  .sort('-playlistPosition')
+  LogEntry
+  .findOne({ _station: attrs._station, playlistPosition: attrs.playlistPosition })
   .exec(callback);
 };
 
