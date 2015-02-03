@@ -8,7 +8,20 @@ var RotationItem = require('../models/rotationItem');
 var Song = require('../models/song');
 var Spin = require('../models/spin');
 var User = require('../models/user');
+var moment = require('moment-timezone');
 
-var moment = require('moment');
-moment().format();
 
+function scheduler() {
+  var self = this;
+
+  this.generatePlaylist = function (station) {
+    
+    // adjust for timezone
+    moment().tz(station.timezone).format();
+    
+
+
+  }
+}
+
+module.exports = scheduler();
