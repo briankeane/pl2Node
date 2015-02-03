@@ -107,5 +107,35 @@ describe('Log Methods', function (done){
       done();
     });
   });
+
+  it('can get logEntries by date range', function (done) {
+    nextDayLogEntry = new LogEntry({ _station: station.id,
+                                     _audioBlock: song.id,
+                                     playlistPosition: 300,
+                                     airtime: new Date(1983,4,16,18),
+                                     listenersAtStart: 10,
+                                     listenersAtFinish: 12 });
+    nextDayLogEntry.save(function (err, savedNextDayEntry) {
+      LogEntry.getLog({ startDate: new Date(1983,4,15),
+                                       endDate: new Date(1983,4,16),
+                                       _station: station.id
+                                     }, function (err, gottenEntries) {
+        expect(gottenEntries.length).to.equal(31);
+        LogEntry.getLog({ startDate: new Date(1983,4,14),
+                                          endDate: new Date(1983,4,15),
+                                          _station: station.id 
+                                    }, function (err, gottenEntries) {
+          expect(gottenEntries.length).to.equal(30);
+          LogEntry.getLog({ startDate: new Date(1983,4,16),
+                                            endDate: new Date(1983,4,16),
+                                           _station: station.id
+                                         }, function (err, gottenEntries) {
+            expect(gottenEntries.length).to.equal(1);
+            done();
+          });
+        });
+      });
+    });
+  });
 });
     
