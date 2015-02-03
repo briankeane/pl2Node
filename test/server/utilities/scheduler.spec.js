@@ -60,6 +60,7 @@ describe('playlist functions', function (done) {
 
             specHelper.saveAll(rotationItems, function (err, savedRotationItems) {
               rotationItems = savedRotationItems;
+              tk.travel(new Date(2014,3,15, 12,45));
               Scheduler.generatePlaylist({ _station: station.id }, done);
             });
           });
@@ -72,4 +73,9 @@ describe('playlist functions', function (done) {
     expect(true).to.equal(true);
     done();
   });
+
+  after(function (done) {
+    tk.reset();
+    done();
+  })
 });

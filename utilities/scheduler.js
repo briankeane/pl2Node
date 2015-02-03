@@ -13,13 +13,23 @@ var moment = require('moment-timezone');
 
 function Scheduler() {
   var self = this;
+  var sampleArrayHolder;
 
   this.generatePlaylist = function (attrs, callback) {
     
-    // adjust for timezone
-    //moment().tz(station.timezone).format();
+    // all times utc
+    moment().utc().format();
 
-    callback();
+    var station = attrs.station;
+    var sampleArray = self.createSampleArray(station);
+
+
+
+      callback();
+
+  }
+
+  this.createSampleArray = function (station) {
 
   }
 }

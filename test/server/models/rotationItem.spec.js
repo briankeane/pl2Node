@@ -49,6 +49,33 @@ describe('a rotationItem', function () {
     });
   });
 
+  it("can find all rotationItems for a station and populate them", function (done) {
+    var newRotationItems = []
+    var newStation = new Station({ secsOfCommercialPerHour: 10 });
+    newStation.save(function (err, savedStation) {
+      specHelper.loadSongs(10, function (err, loadedSongs) {
+        for(var i=0;i<10;i++) {
+          newRotationItems.push(new RotationItem({ _song: loadedSongs[i].id,
+                                  _station: newStation.id,
+                                  bin: 'test',
+                                  weight: i }));
+        }
+        specHelper.saveAll(newRotationItems, function (err, savedRotationItems) {
+          RotationItem.findForStationAndPopulate(newStation.id, function (err, foundRotationItems) {
+            expect(foundRotationItems.length).to.equal(10);
+            expect(foundRotationItems[0].weight).to.equal(9);
+            expect(foundRotationItems[9].weight).to.equal(0);
+            RotationItem.findForStationAndPopulate(station.id, function (err, otherFoundRotationItems) {
+              expect(otherFoundRotationItems.length).to.equal(1);
+              expect(otherFoundRotationItems[0]._song.title).to.equal('Stepladder');
+              done();
+            });
+          });        
+        });
+      });
+    });
+  });
+
   it("can updated weight and log it's own history", function (done) {
     var oldDate = rotationItem.assignedAt;
     rotationItem.updateWeight(55, function (err, updatedItem) {
