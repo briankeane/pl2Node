@@ -12,6 +12,7 @@ var logEntrySchema = db.Schema({
   listenersAtStart:   { type: Number },
   listenersAtFinish:  { type: Number },
   durationOffset:     { type: Number, default: 0 }
+  commercialsFollow   { type: Boolean }
 }, {
   toObject: { getters: true }
 });
