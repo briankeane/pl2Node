@@ -199,3 +199,24 @@ rotationItem.updateWeightAndBin(newWeight, newBin, function (err, updatedRotatio
   // take a guess :)
 });
 ```
+---------------------------
+## Utilities
+###### Helper:
+```javascript
+Hepler.saveAll([song1, song2, spin1, spin2], function (err, resultsArray) {
+  // saves all objects in the array
+});
+```
+
+###### Scheduler:
+```javascript
+Scheduler.generatePlaylist({ station: station }, function (err) {
+  // generates and saves a playlist for the station for 2 hours from now
+});
+Scheduler.generatePlaylist({ station: station,
+                              playlistEndTime(new Date(1983,3,15, 12,30 )) 
+                            }, function (err) {
+  // generates a playlist up until the provided playlistEndTime, as long
+  // as that endTime is within the next week.
+});
+```
