@@ -29,6 +29,11 @@ function Scheduler() {
 
     // unpack attrs
     var station = attrs.station;
+    if (attrs.playlistEndTime) {
+      var playlistEndTime = moment(playlistEndTime);
+    } else {
+      var playlistEndTime = moment().add(2, 'hours');
+    }
     var playlistEndTime = attrs.playlistEndTime || moment().add(2,'hours');
     
     // grab playlist and logs
@@ -122,19 +127,19 @@ function Scheduler() {
            }
           }
 
-          Helper.saveAll(spins, function (err, spins) {
+          Helper.saveAll(spins, function (err, savedSpins) {
             station.lastAccurateCurrentPosition = maxPosition;
             station.save(function (err, savedStation) {
               // if it's the first playlist, start the station
-              if (currentLogEntries.size === 0) {
+              if (currentLogEntries.length === 0) {
                 var firstSpin = spins[0];
-                var logEntry = LogEntry.new({ _station: station.id,
-                                              _playlistPosition: firstSpin.playlistPosition,
-                                              audioBlock: firstSpin._audioBlock.id,
+                var logEntry = new LogEntry({ _station: station.id,
+                                              _audioBlock: firstSpin._audioBlock,
+                                              playlistPosition: firstSpin.playlistPosition,
                                               airtime: firstSpin.airtime,
                                               durationOffset: firstSpin.durationOffset });
                 logEntry.save(function (err, savedLogEntry) {
-                  firstSpin.remove(function (err, removedSpin) {
+                  Spin.findById(firstSpin.id).remove(function (err, removedSpin) {
                     callback();
                   });
                 });

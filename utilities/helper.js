@@ -26,6 +26,8 @@ function Helper() {
     }
 
     async.parallel(functions, function (err, results) {
+      // format results
+      _.map(results, function(result) { return result[0]; });
       callback(err, results);
     });
   };
