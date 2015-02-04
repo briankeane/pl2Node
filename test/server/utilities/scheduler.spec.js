@@ -97,10 +97,11 @@ describe('playlist functions', function (done) {
       expect(spins[12].commercialsFollow).to.equal(true);
       expect(spins[21].commercialsFollow).to.equal(true);
       done();
-        
       });
     });
   });
+  
+  it('continues the playlist', function ())
 
   after(function (done) {
     tk.reset();
