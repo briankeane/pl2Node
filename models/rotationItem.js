@@ -32,7 +32,7 @@ rotationItemSchema.statics.findByIdAndPopulate = function (id, callback) {
   .exec(callback);
 };
 
-rotationItemSchema.statics.findForStationAndPopulate = function (stationId, callback) {
+rotationItemSchema.statics.findAllForStation = function (stationId, callback) {
   RotationItem
   .find({ _station: stationId })
   .populate('_station _song')

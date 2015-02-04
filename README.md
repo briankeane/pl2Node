@@ -150,3 +150,37 @@ Spin.getPartialPlaylist({ _station: station.id,
                         }, function (err spins) {
   // array of spins in chronological order
 });
+```
+#### RotationItem
+###### Properties
+* _station   *reference to 'Station'*
+* _song   *reference to 'Song'*
+* bin *String*
+* weight *Number*
+* assignedAt   *Date*
+* history *[{ bin: *String*, weight: *Number*, assignedAt: *Date* }]
+
+###### Statics:
+```javascript
+RotationItem.findByIdAndPopulate(rotationItemId, function (err, rotationItem) {
+  // populated rotationItem
+});
+
+RotationItem.findAllForStation(stationId, function (err, rotationItems) {
+  // array of rotationItems for the station
+});
+```
+###### Methods:
+```
+rotationItem.updateWeight(newWeight, function (err, updatedRotationItem) {
+  // updates the rotationItem's weight, stores the 
+});
+
+rotationItem.updateBin(newBin, function (err, updatedRotationItem) {
+  // does the same with the 'bin'
+});
+
+rotationItem.updateWeightAndBin(newWeight, newBin, function (err, updatedRotationItem) {
+  // take a guess :)
+});
+```

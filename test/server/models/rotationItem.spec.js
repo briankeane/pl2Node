@@ -61,11 +61,11 @@ describe('a rotationItem', function () {
                                   weight: i }));
         }
         specHelper.saveAll(newRotationItems, function (err, savedRotationItems) {
-          RotationItem.findForStationAndPopulate(newStation.id, function (err, foundRotationItems) {
+          RotationItem.findAllForStation(newStation.id, function (err, foundRotationItems) {
             expect(foundRotationItems.length).to.equal(10);
             expect(foundRotationItems[0].weight).to.equal(9);
             expect(foundRotationItems[9].weight).to.equal(0);
-            RotationItem.findForStationAndPopulate(station.id, function (err, otherFoundRotationItems) {
+            RotationItem.findAllForStation(station.id, function (err, otherFoundRotationItems) {
               expect(otherFoundRotationItems.length).to.equal(1);
               expect(otherFoundRotationItems[0]._song.title).to.equal('Stepladder');
               done();

@@ -44,7 +44,7 @@ function Scheduler() {
 
         // create the sample array to draw on
         sampleArray = [];
-        RotationItem.findForStationAndPopulate(station.id, function (err, rotationItems) {
+        RotationItem.findAllForStation(station.id, function (err, rotationItems) {
           rotationItems.forEach(function (rotationItem) {
             if (rotationItem.bin === 'inRotation') {
               for(var i=0;i<rotationItem.weight; i++) {
