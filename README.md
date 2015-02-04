@@ -4,24 +4,24 @@
 ## Models
 
 ### User
-#### Properties
-* twitter: *String*
-* twitterUID: *String*
-* email *String*
-* birthYear *Number*
-* gender *String*
-* zipcode *String*
+####### Properties
+* twitter:        *String*
+* twitterUID:     *String*
+* email           *String*
+* birthYear       *Number*
+* gender          *String*
+* zipcode         *String*
 * profileImageUrl *String*
-* _station *reference to 'Station'
+* _station         *reference to 'Station'
 
 ### audioBlock (parent for Songs and Commentaries)
-#### Properties
+####### Properties
 * type *String*
 * key  *String*
 * duration *Number*  (positive or negative Integer... number of ms)
 
 ### song (inherit from audioBlock)
-#### Properties
+####### Properties
 * artist *String*
 * title *String*
 * album *String*
@@ -42,8 +42,6 @@ Song.findAllMatchingArtist('Test', function (err, songArray){
 }); 
 ```
 * *keywordSearch*(**keywords, callback**)  --  searches title and artist -- returns array of songs.
-```
-* *findAllMatchingArtist*(**artist, callback**) -- returns array of Songs
 ```
 Song.keywordSearch('Test This out', function (err, songArray){
 }); 
