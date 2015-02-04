@@ -75,3 +75,43 @@ Song.all(function (songArray) {
 * airtime   *Date*
 * listenersAtStart  *Number*
 * listenersAtFinish *Number*
+* durationOffset *Number, default: 0*
+* commercialsFollow *Boolean*
+######Virtual Properties:
+* endTime *Date*
+* duration *Number (in ms)*
+
+###### Model-Level Statics:
+```javascript
+LogEntry.getRecent({ _station: station.id,
+                      count: 5  // default count is 1000
+                    }, function (err, logEntryArray) {
+  // logEntries starting with most recent
+});
+LogEntry.getFullStationLog(station.id, function (err, logEntryArray) {
+  // logEntries starting with most recent
+});
+LogEntry.getLog({ _station: station.id,
+                  startTime: new Date(1983,3,15, 12,30),
+                  endTime: new Date(1983,3,15, 12,45) 
+                }, function (err, logEntryArray) {
+  // logEntries starting with most recent
+});
+LogEntry.getLog({ _station: station.id,
+                  startingPlaylistPosition: 22,
+                  endingPlaylistPosition: 25 
+                }, function (err, logEntryArray) {
+  // logEntries starting with most recent
+});
+LogEntry.getLog({ _station: station.id,
+                  startingDate: new Date(1983,3,14),
+                  endingDate: new Date(1983,3,15) 
+                }, function (err, logEntryArray) {
+  // logEntries starting with most recent (midnight to midnight)
+});
+LogEntry.getEntryByPlaylistPosition({ _station: station.id,
+                                      playlistPosition: 14
+                                    }, function (err, logEntry) {
+  // logEntry
+});
+```
