@@ -153,12 +153,14 @@ Spin.getPartialPlaylist({ _station: station.id,
 ```
 #### RotationItem
 ###### Properties
-* _station   *reference to 'Station'*
-* _song   *reference to 'Song'*
-* bin *String*
-* weight *Number*
-* assignedAt   *Date*
-* history *[{ bin: *String*, weight: *Number*, assignedAt: *Date* }]
+| Property  | Type |
+| --------  | :---:|
+| _station  |  *reference to 'Station'*  |
+| _song     | *reference to 'Song'*  |
+| bin       | *String*  |
+| weight    | *Number*  |
+| assignedAt | *Date*  |
+| history    |*[{ bin: *String*, weight: *Number*, assignedAt: *Date* }] |
 
 ###### Statics:
 ```javascript
