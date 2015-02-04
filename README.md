@@ -4,7 +4,6 @@
 ## Models
 
 ### User
-####### Properties
 | Property                | Type                        | Description                     |
 | --------                | :---:                       | :-------:                       |
 | **twitter**             | *String*                    | user's twitter handle           |
@@ -17,7 +16,6 @@
 | **_station**            | *reference to 'Station'*    | the user's station              |
 
 ### Station
-####### Properties
 | Property                                | Type                        | Description                               |
 | --------                                | :---:                       | :-------:                                 |
 | **_user**                               | *reference to 'User'*       | its owning user                           |
@@ -28,7 +26,6 @@
 | **timezone**                            | *String*                    | for proper station time display           |
 
 #### AudioBlock (parent for Songs and Commentaries)
-###### Properties
 | Property                | Type                        | Description                     |
 | --------                | :---:                       | :-------:                       |
 | **type**                | *String*                    | 'song' or 'commentary'          |
@@ -36,7 +33,6 @@
 | **duration**            | *Number*                    | in ms                           |
 
 #### Commentary (inherit from audioBlock)
-###### Properties
 | Property                | Type                        | Description                     |
 | --------                | :---:                       | :-------:                       |
 | **key**                 | *String*                    | storage key for audio file      |
@@ -44,7 +40,6 @@
 | **_station**            | *reference to 'Station'*    | its owning station              |
 
 #### Song (inherit from audioBlock)
-###### Properties
 | Property                | Type                        | Description                     |
 | --------                | :---:                       | :-------:                       |
 | **key**                 | *String*                    | storage key for audio file      |
@@ -81,7 +76,6 @@ Song.all(function (songArray) {
 });
 ```
 #### LogEntry
-###### Properties
 | Property                | Type                        | Description                             |
 | --------                | :---:                       | :-------:                               |
 | **playlistPosition**    | *Number*                    | position in playlist order              |
@@ -138,7 +132,6 @@ LogEntry.getEntryByPlaylistPosition({ _station: station.id,
 });
 ```
 #### Spin
-###### Properties
 | Property              | Type                        | Description                                     |
 | --------              | :---:                       | :-------:                                       |
 | **playlistPosition**  |*Number*                     | current position in playlist order              |
@@ -173,7 +166,6 @@ Spin.getPartialPlaylist({ _station: station.id,
 });
 ```
 #### RotationItem
-###### Properties
 | Property        | Type                                                  | Description                       |
 | --------        | :---:                                                 |:-------:                          |
 | **_station**    |  *reference to 'Station'*                             | its owning station                |
