@@ -14,13 +14,27 @@
 * profileImageUrl *String*
 * _station         *reference to 'Station'*
 
-### AudioBlock (parent for Songs and Commentaries)
+### Station
+####### Properties
+* _user           *reference to 'User'*
+* secsOfCommercialPerHour     *Number*
+* lastAccurateCurrentPosition  *Number*
+* averageDailyListeners      *Number*
+* averageDailyListenersCalculationDate       *Date*
+* timezone          *String*
+
+#### AudioBlock (parent for Songs and Commentaries)
 ###### Properties
 * type *String*
 * key  *String*
 * duration *Number*  (positive or negative Integer... number of ms)
 
-### Song (inherit from audioBlock)
+#### Commentary (inherit from audioBlock)
+###### Properties
+* _station         *reference to 'Station'*
+* title            *String*
+
+#### Song (inherit from audioBlock)
 ###### Properties
 * artist *String*
 * title *String*
@@ -29,37 +43,35 @@
 * albumArtworkUrl *String*
 * itunesTrackViewUrl *String*
 
-### Commentary (inherit from audioBlock)
-###### Properties
-* _station         *reference to 'Station'*
-* <title></title>   *String*
 
 ###### Model-Level Statics:
-* *findAllMatchingTitle*(**title, callback**)  -- returns array of Songs
 ```javascript
 Song.findAllMatchingTitle('Test', function (err, songArray){
-  // songArray
+  // songs matching title
 }); 
-```
-* *findAllMatchingArtist*(**artist, callback**) -- returns array of Songs
-```javascript
-Song.findAllMatchingArtist('Test', function (err, songArray){
+
+Song.findAllMatchingArtist('Bob', function (err, songArray){
+  // all matching artist ('Bob' and 'Bobby' would both be inlcuded)
 }); 
-```
-* *keywordSearch*(**keywords, callback**)  --  searches title and artist -- returns array of songs.
-```javascript
+
 Song.keywordSearch('Test This out', function (err, songArray){
+  // array of songs where title or artist contain keywords
 }); 
-```
-* *findAllByTitleAndArtist*(**attrs, callback**) -- returns array of songs
-```javascript
+
 Song.findAllByTitleAndArtist({ artist: 'Randy Rogers Band',
                                title: 'One More Goodbye' }, function (err, songArray){
+  // array of matching Songs
 }); 
-```
-* *all* -- returns all songs sorted by artist, title
-```javascript
+
 Song.all(function (songArray) {
-  // songArray
+  // all Songs ordered by title, artist
 });
 ```
+#### LogEntry
+###### Properties
+* playlistPosition *Number*
+* _audioBlock *reference to 'AudioBlock'*
+* _station   *reference to 'Station'*
+* airtime   *Date*
+* listenersAtStart  *Number*
+* listenersAtFinish *Number*
