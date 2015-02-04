@@ -5,35 +5,35 @@
 
 ### User
 ####### Properties
-| Property                | Type                        |
-| --------                | :---:                       |
-| **twitter**             | *String*                    |
-| **twitterUID**          | *String*                    |
-| **email**               | *String*                    |
-| **birthYear**           | *Number*                    |
-| **gender**              | *String*                    |
-| **zipcode**             | *String*                    |
-| **profileImageUrl**     | *String*                    |
-| **_station**            | *reference to 'Station'*    |
+| Property                | Type                        | Description                     |
+| --------                | :---:                       | :-------:                       |
+| **twitter**             | *String*                    | user's twitter handle           |
+| **twitterUID**          | *String*                    | user's twitter user id          |
+| **email**               | *String*                    | users email                     |
+| **birthYear**           | *Number*                    | users birthyear                 |
+| **gender**              | *String*                    | users gender                    |
+| **zipcode**             | *String*                    | zipcode                         |
+| **profileImageUrl**     | *String*                    | location of stored picture      |
+| **_station**            | *reference to 'Station'*    | the user's station              |
 
 ### Station
 ####### Properties
-| Property                                | Type                        |
-| --------                                | :---:                       |
-| **_user**                               | *reference to 'User'*       |
-| **secsOfCommercialPerHour**             | *Number*                    |
-| **lastAccurateCurrentPosition**         | *Number*                    |
-| **averageDailyListeners**               | *Number*                    |
-| **averageDailyListenersCalculationDate**| *Date*                      |
+| Property                                | Type                        | Description                               |
+| --------                                | :---:                       | :-------:                                 |
+| **_user**                               | *reference to 'User'*       | its owning user                           |
+| **secsOfCommercialPerHour**             | *Number*                    | secs of commercials per hour              |
+| **lastAccurateCurrentPosition**         | *Number*                    | for tracking playlist airtime accuracy    |
+| **averageDailyListeners**               | *Number*                    | average of how many listeners per day     |
+| **averageDailyListenersCalculationDate**| *Date*                      | calculation date of averageDailyListeners |
 | **timezone**                            | *String*                    |
 
 #### AudioBlock (parent for Songs and Commentaries)
 ###### Properties
-| Property                | Type                        |
-| --------                | :---:                       |
-| **type**                | *String*                    |
-| **key**                 | *String*                    |
-| **duration**            | *Number*  (positive or negative Integer... number of ms)*
+| Property                | Type                        | Description                     |
+| --------                | :---:                       | :-------:                       |
+| **type**                | *String*                    | 'song' or 'commentary'          |
+| **key**                 | *String*                    | storage key for audio file      |
+| **duration**            | *Number*                    | in ms                           |
 
 #### Commentary (inherit from audioBlock)
 ###### Properties
@@ -42,14 +42,16 @@
 
 #### Song (inherit from audioBlock)
 ###### Properties
-| Property                | Type                        |
-| --------                | :---:                       |
-| **artist**              | *String*                    |
-| **title**               | *String*                    |
-| **album**               | *String*                    |
-| **echonestId**          | *String*                    |
-| **albumArtworkUrl**     | *String*                    |
-| **itunesTrackViewUrl**  | *String*                    |
+| Property                | Type                        | Description                     |
+| --------                | :---:                       | :-------:                       |
+| **key**                 | *String*                    | storage key for audio file      |
+| **duration**            | *Number*                    | length of song in ms            |
+| **artist**              | *String*                    | artist                          |
+| **title**               | *String*                    | title                           |
+| **album**               | *String*                    | album                           |
+| **echonestId**          | *String*                    | song's id on echonest if found  |
+| **albumArtworkUrl**     | *String*                    | location of album artwork file  |
+| **itunesTrackViewUrl**  | *String*                    | link to iTunes purchase page    |
 
 
 ###### Statics:
@@ -77,21 +79,21 @@ Song.all(function (songArray) {
 ```
 #### LogEntry
 ###### Properties
-| Property                | Type                        |
-| --------                | :---:                       |
-| **playlistPosition**    | *Number*                    |
-| **_audioBlock**         | *reference to 'AudioBlock'* |
-| **_station**            | *reference to 'Station'*    |
-| **airtime**             | *Date*                      |
-| **listenersAtStart**    | *Number*                    |
-| **listenersAtFinish**   | *Number*                    |
-| **durationOffset**      | *Number, default: 0*        |
-| **commercialsFollow**   | *Boolean*                   |
+| Property                | Type                        | Description                             |
+| --------                | :---:                       | :-------:                               |
+| **playlistPosition**    | *Number*                    | position in playlist order              |
+| **_audioBlock**         | *reference to 'AudioBlock'* | the song or commentary that was played  |
+| **_station**            | *reference to 'Station'*    | its owning staton                       |
+| **airtime**             | *Date*                      | time that it aired                      |
+| **listenersAtStart**    | *Number*                    | number of listeners at start            |
+| **listenersAtFinish**   | *Number*                    | number of listeners at end              |
+| **durationOffset**      | *Number, default: 0*        | offset of spin in + or - ms             |
+| **commercialsFollow**   | *Boolean*                   | did commercials follow the spin         |
 ######Virtual Properties:
-| Property                | Type                        |
-| --------                | :---:                       |
-| **endTime**             | *Date*                      |
-| **duration**            | *Number (in ms)*            |
+| Property                | Type                        | Description                             |
+| --------                | :---:                       | :-------:                               |
+| **endTime**             | *Date*                      | airtime + duration                      |
+| **duration**            | *Number (in ms)*            | _audioBlock.duration + durationOffset   |
 
 ###### Statics:
 ```javascript
@@ -134,20 +136,20 @@ LogEntry.getEntryByPlaylistPosition({ _station: station.id,
 ```
 #### Spin
 ###### Properties
-| Property              | Type                        |
-| --------              | :---:                       |
-| **playlistPosition**  |*Number*                     |
-| **_audioBlock**       |*reference to 'AudioBlock'*  |
-| **_station**          |*reference to 'Station'*     |
-| **airtime**           |*Date*                       |
-| **durationOffset**    |*Number, default: 0*         |
+| Property              | Type                        | Description                                     |
+| --------              | :---:                       | :-------:                                       |
+| **playlistPosition**  |*Number*                     | current position in playlist order              |
+| **_audioBlock**       |*reference to 'AudioBlock'*  | contains its song or commentary                 |
+| **_station**          |*reference to 'Station'*     | its owning station                              |
+| **airtime**           |*Date*                       | the currently scheduled airtime                 |
+| **durationOffset**    |*Number, default: 0*         | positive or negative. allows blending of songs  |
 
 ######Virtual Properties:
-| Property              | Type                        |
-| --------              | :---:                       |
-| **commercialsFollow** | *Boolean*                   |
-| **endTime**           | *Date*                      |
-| **duration**          | *Number (in ms)*            |
+| Property              | Type                        | Description                           |
+| --------              | :---:                       | :-------:                             |
+| **commercialsFollow** | *Boolean*                   | calculated by airtime                 |
+| **endTime**           | *Date*                      | airtime + duration                    |
+| **duration**          | *Number (in ms)*            | _audioBlock.duration + durationOffset |
 
 ###### Statics:
 ```javascript
@@ -169,13 +171,13 @@ Spin.getPartialPlaylist({ _station: station.id,
 ```
 #### RotationItem
 ###### Properties
-| Property        | Type                        |
-| --------        | :---:                       |
-| **_station**    |  *reference to 'Station'*   |
-| **_song**       | *reference to 'Song'*       |
-| **bin**         |  *String*                   |
-| **weight**      | *Number*                    |
-| **assignedAt**  | *Date*                      |
+| Property        | Type                        | Description                       |
+| --------        | :---:                       |:-------:                          |
+| **_station**    |  *reference to 'Station'*   | its owning station                |
+| **_song**       | *reference to 'Song'*       | contains its song                 |
+| **bin**         |  *String*                   | 'inRotation', 'flashback'         |
+| **weight**      | *Number*                    | likely spins per week             |
+| **assignedAt**  | *Date*                      | date of current configuration     |
 | **history**     |*[{ bin: String, weight: Number, assignedAt: Date }]* |
 
 ###### Statics:
