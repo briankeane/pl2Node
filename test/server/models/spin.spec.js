@@ -244,7 +244,7 @@ describe('playlist functions', function (done) {
                                   playlistPosition: 10
                                 }, function (err, foundSpin) {
       expect(foundSpin.playlistPosition).to.equal(10);
-      expect(foundSpin._audioBlock.equals(songs[9].id)).to.equal(true);
+      expect(foundSpin._audioBlock.title).to.equal(songs[9].title);
       done();
     });
   });

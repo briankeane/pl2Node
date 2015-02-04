@@ -104,8 +104,13 @@ describe('playlist functions', function (done) {
     Station.findById(station.id, function (err, foundStation) {
       expect(station.lastAccuratePlaylistPosition).to.equal(36);
       expect(foundStation.lastAccuratePlaylistPosition).to.equal(36);
-      Spin.findById()
-      done();
+      Spin.getByPlaylistPosition({ _station: station.id,
+                                  playlistPosition: 36
+                                }, function (err, foundSpin) {
+        expect(station.lastAccurateAirtime.getTime()).to.equal(foundSpin.endTime.getTime());
+        expect(foundStation.lastAccurateAirtime.getTime()).to.equal(foundSpin.endTime.getTime());
+        done();
+      });
     });
   });
 

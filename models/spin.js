@@ -103,6 +103,7 @@ spinSchema.statics.getPartialPlaylist = function (attrs, callback) {
 spinSchema.statics.getByPlaylistPosition = function (attrs, callback) {
   Spin
   .findOne({ _station: attrs._station, playlistPosition: attrs.playlistPosition })
+  .populate('_audioBlock')
   .exec(callback);
 };
 
