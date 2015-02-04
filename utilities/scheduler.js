@@ -17,7 +17,7 @@ var Helper = require('./helper');
 function Scheduler() {
   var self = this;
   var sampleArray;
-  var lastAccurateCurrentPosition;
+  var lastAccuratePlaylistPosition;
   var maxPosition;
   var timeTracker;
   var recentlyPlayedSongs;
@@ -57,10 +57,10 @@ function Scheduler() {
           if ((!currentPlaylist.length) && (currentLogEntries.length)) {
 
             // give it 1 spin to start from
-            lastAccurateCurrentPosition = currentLogEntries[0].playlistPosition + 1
+            lastAccuratePlaylistPosition = currentLogEntries[0].playlistPosition + 1
             var spin = new Spin({ _station: station.id,
                                   _audioBlock: _.sample(sampleArray),
-                                  playlistPosition: lastAccurateCurrentPosition,
+                                  playlistPosition: lastAccuratePlaylistPosition,
                                   airtime: currentLogEntries[0].endTime });
             currentPlaylist.push(spin);
           }
@@ -128,7 +128,8 @@ function Scheduler() {
           }
 
           Helper.saveAll(spins, function (err, savedSpins) {
-            station.lastAccurateCurrentPosition = maxPosition;
+            station.lastAccuratePlaylistPosition = maxPosition;
+            station.lastAccurateAirtime = moment(timeTracker).toDate();
             station.save(function (err, savedStation) {
               // if it's the first playlist, start the station
               if (currentLogEntries.length === 0) {
@@ -152,6 +153,17 @@ function Scheduler() {
       });
     });
   };
+
+  this.updateAirtimes = function (attrs, callback) {
+    Spin.getFullPlaylist(_station.id, function (err, fullPlaylist) {
+      if (!fullPlaylist.length) {
+        callback();
+      }
+      if ((attrs.endTime) && (attrs.endTime < station.lastAccurateAirtime)) {
+
+      }
+    })
+  }
 }
 
 module.exports = new Scheduler();

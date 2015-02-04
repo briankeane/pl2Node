@@ -11,8 +11,8 @@ var logEntrySchema = db.Schema({
   airtime:            { type: Date },
   listenersAtStart:   { type: Number },
   listenersAtFinish:  { type: Number },
-  durationOffset:     { type: Number, default: 0 }
-  commercialsFollow   { type: Boolean }
+  durationOffset:     { type: Number, default: 0 },
+  commercialsFollow:  { type: Boolean }
 }, {
   toObject: { getters: true }
 });

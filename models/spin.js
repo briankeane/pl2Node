@@ -100,6 +100,12 @@ spinSchema.statics.getPartialPlaylist = function (attrs, callback) {
   .exec(callback);
 }
 
+spinSchema.statics.getByPlaylistPosition = function (attrs, callback) {
+  Spin
+  .findOne({ _station: attrs._station, playlistPosition: attrs.playlistPosition })
+  .exec(callback);
+};
+
 spinSchema.plugin(timestamps);
 var Spin = db.model('Spin', spinSchema);
 module.exports = Spin;

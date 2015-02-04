@@ -16,14 +16,15 @@
 | **_station**            | *reference to 'Station'*    | the user's station              |
 
 ### Station
-| Property                                | Type                        | Description                               |
-| --------                                | :---:                       | :-------:                                 |
-| **_user**                               | *reference to 'User'*       | its owning user                           |
-| **secsOfCommercialPerHour**             | *Number*                    | secs of commercials per hour              |
-| **lastAccurateCurrentPosition**         | *Number*                    | for tracking playlist airtime accuracy    |
-| **averageDailyListeners**               | *Number*                    | average of how many listeners per day     |
-| **averageDailyListenersCalculationDate**| *Date*                      | calculation date of averageDailyListeners |
-| **timezone**                            | *String*                    | for proper station time display           |
+| Property                                | Type                        | Description                                   |
+| --------                                | :---:                       | :-------:                                     |
+| **_user**                               | *reference to 'User'*       | its owning user                               |
+| **secsOfCommercialPerHour**             | *Number*                    | secs of commercials per hour                  |
+| **lastAccuratePlaylistPosition**        | *Number*                    | limit of station accuracy in playlistPositon  |
+| **lastAccurateAirtime                   | *Date*                      | limit of station accuracy in Datetime         |
+| **averageDailyListeners**               | *Number*                    | average of how many listeners per day         |
+| **averageDailyListenersCalculationDate**| *Date*                      | calculation date of averageDailyListeners     |
+| **timezone**                            | *String*                    | for proper station time display               |
 
 #### AudioBlock (parent for Songs and Commentaries)
 | Property                | Type                        | Description                     |
@@ -152,17 +153,25 @@ LogEntry.getEntryByPlaylistPosition({ _station: station.id,
 Spin.getFullPlaylist(station.id, function (err, spins) {
   // array of spins in chronological order
 });
+
 Spin.getPartialPlaylist({ _station: station.id,
                           endTime: new Date(1983,3,15, 12,30),  // and/or
                           startTime: new Date(1983,3,14, 12,30)
                         }, function (err spins) {
   // array of spins in chronological order
 });
+
 Spin.getPartialPlaylist({ _station: station.id,
                           endingPlaylistPosition: 12,  // and/or
                           startingPlaylistPosition: 20
                         }, function (err spins) {
   // array of spins in chronological order
+});
+
+Spin.getByPlaylistPosition({ _station: station.id,
+                                  playlistPosition: 10
+                                }, function (err, foundSpin) {
+  // foundSpin
 });
 ```
 #### RotationItem

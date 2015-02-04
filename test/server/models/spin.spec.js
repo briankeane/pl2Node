@@ -227,7 +227,7 @@ describe('playlist functions', function (done) {
     });
   });
 
-  it("gets a pratial playtlist by starting and ending playlistPositions", function (done) {
+  it("gets a partial playlist by starting and ending playlistPositions", function (done) {
     Spin.getPartialPlaylist({ _station: station.id,
                               startingPlaylistPosition: 10,
                               endingPlaylistPosition: 15
@@ -235,6 +235,16 @@ describe('playlist functions', function (done) {
       expect(partialPlaylist.length).to.equal(6);
       expect(partialPlaylist[0].playlistPosition).to.equal(10);
       expect(partialPlaylist[5].playlistPosition).to.equal(15);
+      done();
+    });
+  });
+
+  it("gets a spin by its playlistPosition", function (done) {
+    Spin.getByPlaylistPosition({ _station: station.id,
+                                  playlistPosition: 10
+                                }, function (err, foundSpin) {
+      expect(foundSpin.playlistPosition).to.equal(10);
+      expect(foundSpin._audioBlock.equals(songs[9].id)).to.equal(true);
       done();
     });
   });

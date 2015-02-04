@@ -73,36 +73,54 @@ describe('playlist functions', function (done) {
   it('generatePlaylist creates a first playlist', function (done) {
     Spin.getFullPlaylist(station.id, function (err, spins) {
       LogEntry.getFullStationLog(station.id, function (err, logEntries) {
-      test = _.map(spins, function (spin) { return { audioBlockTitle: spin._audioBlock.title, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow, playlistPosition: spin.playlistPosition } });
-      
-      // make sure all logEntry values stored
-      expect(logEntries.length).to.equal(1);
-      expect(logEntries[0].playlistPosition).to.equal(1);
-      expect(logEntries[0].airtime.getTime()).to.exist;
-      expect(logEntries[0]._audioBlock.title).to.exist;
-      expect(logEntries[0]._station).to.exist;
-      expect(logEntries[0].durationOffset).to.equal(0);
-      
-      // make sure all spin values stored
-      expect(spins.length).to.equal(35);
-      expect(spins[0].playlistPosition).to.equal(2);
-      expect(spins[0].airtime.getTime()).to.exist;
-      expect(spins[0]._audioBlock.title).to.exist;
-      expect(spins[0]._station).to.exist;
-      expect(spins[0].durationOffset).to.equal(0);
 
-      // make sure commercials are in the right place
-      expect(spins[0].commercialsFollow).to.equal(false);
-      expect(spins[3].commercialsFollow).to.equal(true);
-      expect(spins[12].commercialsFollow).to.equal(true);
-      expect(spins[21].commercialsFollow).to.equal(true);
-      done();
+        // make sure all logEntry values stored
+        expect(logEntries.length).to.equal(1);
+        expect(logEntries[0].playlistPosition).to.equal(1);
+        expect(logEntries[0].airtime.getTime()).to.exist;
+        expect(logEntries[0]._audioBlock.title).to.exist;
+        expect(logEntries[0]._station).to.exist;
+        expect(logEntries[0].durationOffset).to.equal(0);
+        
+        // make sure all spin values stored
+        expect(spins.length).to.equal(35);
+        expect(spins[0].playlistPosition).to.equal(2);
+        expect(spins[0].airtime.getTime()).to.exist;
+        expect(spins[0]._audioBlock.title).to.exist;
+        expect(spins[0]._station).to.exist;
+        expect(spins[0].durationOffset).to.equal(0);
+  
+        // make sure commercials are in the right place
+        expect(spins[0].commercialsFollow).to.equal(false);
+        expect(spins[3].commercialsFollow).to.equal(true);
+        expect(spins[12].commercialsFollow).to.equal(true);
+        expect(spins[21].commercialsFollow).to.equal(true);
+        done();
       });
     });
   });
   
-  it('continues the playlist', function ())
+  it('updates the lastAccuratePlaylistPosition & lastAccurateAirtime', function (done) {
+    Station.findById(station.id, function (err, foundStation) {
+      expect(station.lastAccuratePlaylistPosition).to.equal(36);
+      expect(foundStation.lastAccuratePlaylistPosition).to.equal(36);
+      Spin.findById()
+      done();
+    });
+  });
 
+  describe('updateAirtimes', function (done) {
+    xit('just returns if there is no playlist', function (err) {
+      station2 = newStation({ secsOfCommercialPerHour: 30 });
+      station2.save(function (err, savedNewStation) {
+        Scheduler.updateAirtimes({ station: savedNewStation }, function (err, station2) {
+          expect(err).to.equal(null);
+          done();
+        });
+      });
+    });
+  });
+  
   after(function (done) {
     tk.reset();
     done();
