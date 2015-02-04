@@ -25,7 +25,7 @@
 | **lastAccurateCurrentPosition**         | *Number*                    | for tracking playlist airtime accuracy    |
 | **averageDailyListeners**               | *Number*                    | average of how many listeners per day     |
 | **averageDailyListenersCalculationDate**| *Date*                      | calculation date of averageDailyListeners |
-| **timezone**                            | *String*                    |
+| **timezone**                            | *String*                    | for proper station time display           |
 
 #### AudioBlock (parent for Songs and Commentaries)
 ###### Properties
@@ -37,8 +37,11 @@
 
 #### Commentary (inherit from audioBlock)
 ###### Properties
-* _station         *reference to 'Station'*
-* title            *String*
+| Property                | Type                        | Description                     |
+| --------                | :---:                       | :-------:                       |
+| **key**                 | *String*                    | storage key for audio file      |
+| **duration**            | *Number*                    | in ms                           |
+| **_station**            | *reference to 'Station'*    | its owning station              |
 
 #### Song (inherit from audioBlock)
 ###### Properties
@@ -171,14 +174,14 @@ Spin.getPartialPlaylist({ _station: station.id,
 ```
 #### RotationItem
 ###### Properties
-| Property        | Type                        | Description                       |
-| --------        | :---:                       |:-------:                          |
-| **_station**    |  *reference to 'Station'*   | its owning station                |
-| **_song**       | *reference to 'Song'*       | contains its song                 |
-| **bin**         |  *String*                   | 'inRotation', 'flashback'         |
-| **weight**      | *Number*                    | likely spins per week             |
-| **assignedAt**  | *Date*                      | date of current configuration     |
-| **history**     |*[{ bin: String, weight: Number, assignedAt: Date }]* |
+| Property        | Type                                                  | Description                       |
+| --------        | :---:                                                 |:-------:                          |
+| **_station**    |  *reference to 'Station'*                             | its owning station                |
+| **_song**       | *reference to 'Song'*                                 | contains its song                 |
+| **bin**         |  *String*                                             | 'inRotation', 'flashback'         |
+| **weight**      | *Number*                                              | likely spins per week             |
+| **assignedAt**  | *Date*                                                | date of current configuration     |
+| **history**     |*[{ bin: String, weight: Number, assignedAt: Date }]*  | all past changes for this item    |
 
 ###### Statics:
 ```javascript
