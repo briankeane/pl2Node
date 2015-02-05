@@ -216,10 +216,14 @@ function Scheduler() {
             timeTracker = moment(playlist[0].airtime);
           }
 
-
+          var toBeUpdated = [];
           var i=0;
           for (i=0; i<playlist.length; i++) {
-            playlist[i].airtime = moment(timeTracker).toDate();
+            if (playlist[i].airtime.getTime() != timeTracker.toDate().getTime()) {
+              playlist[i].airtime = moment(timeTracker).toDate();
+              toBeUpdated.push(playlist[i]);
+            }
+
             lastAccuratePlaylistPosition = playlist[i].playlistPosition;
 
             timeTracker.add(playlist[i].duration, 'ms');
@@ -240,13 +244,12 @@ function Scheduler() {
             }
           }
 
-
-          // push all to be updated in db into an array
-          var toSave = playlist.slice(0,i);
-          toSave.push(station);
+          // add 
+          // var toSave = playlist.slice(0,i);
+          toBeUpdated.push(station);
 
           // update
-          Helper.saveAll(playlist, function (err, savedPlaylist) {
+          Helper.saveAll(toBeUpdated, function (err, savedPlaylist) {
             callback(null, station);
             return;
           });
