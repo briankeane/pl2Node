@@ -28,6 +28,8 @@ function Helper() {
     }
 
     async.parallel(functions, function (err, results) {
+      // format results
+      results = _.map(results, function(result) { return result[0]; });
       callback(err, results);
     });
   };
@@ -69,9 +71,6 @@ function Helper() {
                             echonestId: 'echonestId#:' + i }));
     }
     self.saveAll(songs, function (err, results) {
-      // originally results is [<Object>,1]... so convert it to just an array of objects
-      results = _.map(results, function (result) { return result[0] });
-
       callback(err, results);
     });
   }

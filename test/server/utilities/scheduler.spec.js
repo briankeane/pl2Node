@@ -14,6 +14,7 @@ var expect = require('chai').expect;
 var specHelper = require('../specHelper');
 var tk = require('timekeeper');
 var _ = require('lodash');
+var Helper = require('../../../utilities/helper');
 
 describe('playlist functions', function (done) {
   var songs;
@@ -61,8 +62,11 @@ describe('playlist functions', function (done) {
 
             specHelper.saveAll(rotationItems, function (err, savedRotationItems) {
               rotationItems = savedRotationItems;
-              tk.travel(new Date(2014,3,15, 12,46));
-              Scheduler.generatePlaylist({ station: station }, done);
+              tk.freeze(new Date(2014,3,15, 12,46));
+              Scheduler.generatePlaylist({ station: station }, function (err, returnedStation) {
+                tk.travel(new Date(2014,3,15, 12,46,01));
+                done();
+              });
             });
           });
         });
@@ -115,12 +119,44 @@ describe('playlist functions', function (done) {
   });
 
   describe('updateAirtimes', function (done) {
-    xit('just returns if there is no playlist', function (err) {
-      station2 = newStation({ secsOfCommercialPerHour: 30 });
+    
+    it('just returns if there is no playlist', function (done) {
+      station2 = new Station({ secsOfCommercialPerHour: 30 });
       station2.save(function (err, savedNewStation) {
         Scheduler.updateAirtimes({ station: savedNewStation }, function (err, station2) {
           expect(err).to.equal(null);
+          expect(station2.lastAccuratePlaylistPosition).to.be.an('undefined');
           done();
+        });
+      });
+    });
+
+    it('updates the airtimes from ', function (done) {
+      Spin.getFullPlaylist(station.id, function (err, fullPlaylist) {
+        for (var i=10; i<fullPlaylist.length; i++) {
+          fullPlaylist[i].airtime = new Date(1983,3,15);
+        }
+        station.lastAccuratePlaylistPosition = fullPlaylist[9].playlistPosition;
+        station.lastAccurateAirtime = fullPlaylist[9].airtime;
+        
+        var toSave = fullPlaylist.slice(10,100);
+        toSave.push(station);
+
+        specHelper.saveAll(toSave, function (err, savedObjects) {
+          station = savedObjects[25];
+
+
+          Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
+            Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
+              test = _.map(fixedPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
+              expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 13,58).getTime());
+              expect(fixedPlaylist[22].commercialsFollow).to.equal(true);
+              expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,40).getTime());
+              expect(fixedPlaylist[10].airtime.getTime()).to.equal(new Date(2014,3,15, 13,19).getTime());
+              expect(fixedPlaylist[11].airtime.getTime()).to.equal(new Date(2014,3,15, 13,22).getTime());
+              done();
+            });
+          });
         });
       });
     });

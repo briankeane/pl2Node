@@ -96,6 +96,7 @@ spinSchema.statics.getPartialPlaylist = function (attrs, callback) {
 
   Spin
   .find(query)
+  .populate('_audioBlock')
   .sort('playlistPosition')
   .exec(callback);
 }

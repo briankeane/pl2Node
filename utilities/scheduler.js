@@ -118,7 +118,6 @@ function Scheduler() {
 
             spins.push(spin);
 
-            //debugger;
             timeTracker = timeTracker.add(song.duration, 'ms');
 
            // eventually change to "if spin.commercialsFollow"
@@ -141,11 +140,13 @@ function Scheduler() {
                                               durationOffset: firstSpin.durationOffset });
                 logEntry.save(function (err, savedLogEntry) {
                   Spin.findById(firstSpin.id).remove(function (err, removedSpin) {
-                    callback();
+                    callback(null, station);
+                    return;
                   });
                 });
               } else {
-                callback();
+                callback(null, station);
+                return;
               }
             });
           });
@@ -155,15 +156,100 @@ function Scheduler() {
   };
 
   this.updateAirtimes = function (attrs, callback) {
-    Spin.getFullPlaylist(_station.id, function (err, fullPlaylist) {
-      if (!fullPlaylist.length) {
-        callback();
-      }
-      if ((attrs.endTime) && (attrs.endTime < station.lastAccurateAirtime)) {
 
+    moment().utc().format();
+
+    var station = attrs.station;
+    var fullPlaylist;
+    var finalLogEntry;
+    var playlist;
+    var lastAccuratePlaylistPosition;
+    var timeTracker;
+
+    // exit if playlist is already accurate
+    if ( ((attrs.endTime) && (attrs.endTime < station.lastAccurateAirtime)) || 
+                                       ((attrs.playlistPosition) && 
+                           (attrs.playlistPosition < lastAccuratePlaylistPosition))) {
+      callback(null, station);
+      return;
+    }
+
+    Spin.getFullPlaylist(station.id, function (err, gottenPlaylist) {
+      fullPlaylist = gottenPlaylist;
+      
+      // exit if there's no playlist
+      if (!fullPlaylist.length) {
+        callback(null, station);
+        return;
       }
-    })
-  }
+
+      // if the lastAccuratePosition is after the log, set it as the starting point
+      LogEntry.getRecent({ _station: station.id, count:1 }, function (err, gottenLogEntry) {
+        finalLogEntry = gottenLogEntry;
+        // if the lastAccuratePosition is in the playlist, use it to start
+        if ((station.lastAccuratePlaylistPosition) && (station.lastAccuratePlaylistPosition > finalLogEntry.playlistPosition)) {
+          lastAccuratePlaylistPosition = station.lastAccuratePlaylistPosition;
+        // otherwise use logentry
+        } else {
+          lastAccuratePlaylistPosition = finalLogEntry.playlistPosition;
+        }
+
+        Spin.getPartialPlaylist({ _station: station.id,
+                                    startingPlaylistPosition: lastAccuratePlaylistPosition 
+                                }, function (err, partialPlaylist) {
+          
+          playlist = partialPlaylist;
+
+          // set timeTracker
+          if (lastAccuratePlaylistPosition == 0) {
+            if (finalLogEntry.commercialsFollow) {
+              timeTracker = moment(finalLogEntry.endTime + station.secsOfCommercialPerHour/2);
+            } else {
+              timeTracker = moment(finalLogEntry.endTime);
+            };
+
+          } else {
+            timeTracker = moment(playlist[0].startTime);
+          }
+
+
+          var i=0;
+          for (i=0; i<playlist.length; i++) {
+            playlist[i].airtime = moment(timeTracker).toDate();
+            lastAccuratePlaylistPosition = playlist[i].playlistPosition;
+
+            timeTracker.add(playlist[i].duration, 'ms');
+
+            // add commercial time if necessary
+            if (playlist[i].commercialsFollow) {
+              timeTracker.add(station.secsOfCommercialPerHour/2, 'seconds');
+            }
+
+            // break out if past stop time
+            if (attrs.endTime && (timeTracker > attrs.endTime)) {
+              break;
+            }
+
+            // break out if past endingPlaylistPosition
+            if (attrs.endingPlaylistPosition && (playlist[i].playlistPosition >= attrs.endingPlaylistPosition)) {
+              break;
+            }
+          }
+
+
+          // push all to be updated in db into an array
+          var toSave = playlist.slice(0,i);
+          toSave.push(station);
+
+          // update
+          Helper.saveAll(playlist, function (err, savedPlaylist) {
+            callback(null, station);
+            return;
+          });
+        });
+      });
+    });
+  };
 }
 
 module.exports = new Scheduler();
