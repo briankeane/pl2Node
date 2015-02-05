@@ -203,11 +203,13 @@ function Scheduler() {
 
           // if starting with the log, set the timeTracker
           if (lastAccuratePlaylistPosition == finalLogEntry.playlistPosition) {
+            timeTracker = moment(finalLogEntry.endTime);
+
+            // add time for comemrcial block if necessary
             if (finalLogEntry.commercialsFollow) {
-              timeTracker = moment(finalLogEntry.endTime + station.secsOfCommercialPerHour/2);
-            } else {
-              timeTracker = moment(finalLogEntry.endTime);
-            };
+              timeTracker.add(station.secsOfCommercialPerHour/2, 'seconds');
+              debugger;
+            }
 
           // otherwise, set it to the beginning of the playlist
           } else {

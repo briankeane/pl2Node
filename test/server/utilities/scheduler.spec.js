@@ -251,11 +251,11 @@ describe('playlist functions', function (done) {
               Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
                 test = _.map(fixedPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
                 debugger;
-                  expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 14,04).getTime());
-                  expect(fixedPlaylist[21].commercialsFollow).to.equal(true);
-                  expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,43).getTime());
-                  expect(fixedPlaylist[4].airtime.getTime()).to.equal(new Date(2014,3,15, 13,04).getTime());
-                  expect(fixedPlaylist[5].airtime.getTime()).to.equal(new Date(2014,3,15, 13,07).getTime());
+                expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 14,16).getTime());
+                expect(fixedPlaylist[8].commercialsFollow).to.equal(true);
+                expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,55).getTime());
+                expect(fixedPlaylist[4].airtime.getTime()).to.equal(new Date(2014,3,15, 13,16).getTime());
+                expect(fixedPlaylist[5].airtime.getTime()).to.equal(new Date(2014,3,15, 13,19).getTime());
                 done();
               });
             });
