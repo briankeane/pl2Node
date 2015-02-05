@@ -40,6 +40,12 @@
 | **duration**            | *Number*                    | in ms                           |
 | **_station**            | *reference to 'Station'*    | its owning station              |
 
+#### CommercialBlock (inherit from audioBlock)
+| Property                | Type                        | Description                     |
+| --------                | :---:                       | :-------:                       |
+| **duration**            | *Number*                    | in ms                           |
+| probably will add more of these later |
+
 #### Song (inherit from audioBlock)
 | Property                | Type                        | Description                     |
 | --------                | :---:                       | :-------:                       |

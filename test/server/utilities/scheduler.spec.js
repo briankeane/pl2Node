@@ -77,11 +77,10 @@ describe('playlist functions', function (done) {
   it('generatePlaylist creates a first playlist', function (done) {
     Spin.getFullPlaylist(station.id, function (err, spins) {
       LogEntry.getFullStationLog(station.id, function (err, logEntries) {
-
         // make sure all logEntry values stored
         expect(logEntries.length).to.equal(1);
         expect(logEntries[0].playlistPosition).to.equal(1);
-        expect(logEntries[0].airtime.getTime()).to.exist;
+        expect(logEntries[0].airtime.getTime()).to.equal(new Date(2014,3,15, 12,46).getTime());
         expect(logEntries[0]._audioBlock.title).to.exist;
         expect(logEntries[0]._station).to.exist;
         expect(logEntries[0].durationOffset).to.equal(0);
@@ -89,7 +88,7 @@ describe('playlist functions', function (done) {
         // make sure all spin values stored
         expect(spins.length).to.equal(35);
         expect(spins[0].playlistPosition).to.equal(2);
-        expect(spins[0].airtime.getTime()).to.exist;
+        expect(spins[0].airtime.getTime()).to.equal(new Date(2014,3,15, 12,49).getTime());
         expect(spins[0]._audioBlock.title).to.exist;
         expect(spins[0]._station).to.exist;
         expect(spins[0].durationOffset).to.equal(0);
@@ -131,7 +130,7 @@ describe('playlist functions', function (done) {
       });
     });
 
-    it('updates the airtimes from ', function (done) {
+    it('updates the airtimes', function (done) {
       Spin.getFullPlaylist(station.id, function (err, fullPlaylist) {
         // screw up some airtimes
         for (var i=10; i<fullPlaylist.length; i++) {
@@ -150,13 +149,11 @@ describe('playlist functions', function (done) {
 
           Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
             Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
-              test = _.map(fixedPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
-              debugger;
-              expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 13,58).getTime());
-              expect(fixedPlaylist[22].commercialsFollow).to.equal(true);
-              expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,40).getTime());
-              expect(fixedPlaylist[10].airtime.getTime()).to.equal(new Date(2014,3,15, 13,19).getTime());
-              expect(fixedPlaylist[11].airtime.getTime()).to.equal(new Date(2014,3,15, 13,22).getTime());
+              expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 14,04).getTime());
+              expect(fixedPlaylist[21].commercialsFollow).to.equal(true);
+              expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,43).getTime());
+              expect(fixedPlaylist[10].airtime.getTime()).to.equal(new Date(2014,3,15, 13,22).getTime());
+              expect(fixedPlaylist[11].airtime.getTime()).to.equal(new Date(2014,3,15, 13,25).getTime());
               done();
             });
           });
@@ -183,13 +180,11 @@ describe('playlist functions', function (done) {
 
           Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
             Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
-              test = _.map(fixedPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
-              debugger;
-              expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 13,58).getTime());
-              expect(fixedPlaylist[22].commercialsFollow).to.equal(true);
-              expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,40).getTime());
-              expect(fixedPlaylist[4].airtime.getTime()).to.equal(new Date(2014,3,15, 12,58).getTime());
-              expect(fixedPlaylist[5].airtime.getTime()).to.equal(new Date(2014,3,15, 13,04).getTime());
+              expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 14,04).getTime());
+              expect(fixedPlaylist[21].commercialsFollow).to.equal(true);
+              expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,43).getTime());
+              expect(fixedPlaylist[4].airtime.getTime()).to.equal(new Date(2014,3,15, 13,04).getTime());
+              expect(fixedPlaylist[5].airtime.getTime()).to.equal(new Date(2014,3,15, 13,07).getTime());
               done();
             });
           });
@@ -216,14 +211,53 @@ describe('playlist functions', function (done) {
 
           Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
             Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
-              test = _.map(fixedPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
-              debugger;
-              expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 13,58).getTime());
-              expect(fixedPlaylist[22].commercialsFollow).to.equal(true);
-              expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,40).getTime());
-              expect(fixedPlaylist[4].airtime.getTime()).to.equal(new Date(2014,3,15, 12,58).getTime());
-              expect(fixedPlaylist[5].airtime.getTime()).to.equal(new Date(2014,3,15, 13,04).getTime());
+              expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 14,04).getTime());
+              expect(fixedPlaylist[21].commercialsFollow).to.equal(true);
+              expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,43).getTime());
+              expect(fixedPlaylist[4].airtime.getTime()).to.equal(new Date(2014,3,15, 13,04).getTime());
+              expect(fixedPlaylist[5].airtime.getTime()).to.equal(new Date(2014,3,15, 13,07).getTime());
               done();
+            });
+          });
+        });
+      });
+    });
+
+  it('updates the airtimes starting from the log, commercialsFollow is true', function (done) {
+      Spin.getFullPlaylist(station.id, function (err, fullPlaylist) {
+        // screw up some airtimes -- starting with a commercialsFollow=true spin
+        for (var i=0; i<fullPlaylist.length; i++) {
+          fullPlaylist[i].airtime = new Date(1983,3,15);
+        }
+
+        LogEntry.getEntryByPlaylistPosition({ _station: station.id,
+                                              playlistPosition: 1
+                                            }, function (err, logEntry) {
+
+          logEntry.airtime = new Date(2014,3,15, 12,58);
+          logEntry.commercialsFollow = true;
+          station.lastAccuratePlaylistPosition = logEntry.playlistPosition;
+          station.lastAccurateAirtime = logEntry.airtime;
+          
+          // group all objects to be saved and save them
+          var toSave = fullPlaylist.slice(10,100);
+          toSave.push(station);
+          toSave.push(logEntry);
+          specHelper.saveAll(toSave, function (err, savedObjects) {
+            // grab the updated station
+            station = savedObjects[25];
+
+            Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
+              Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
+                test = _.map(fixedPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
+                debugger;
+                  expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 14,04).getTime());
+                  expect(fixedPlaylist[21].commercialsFollow).to.equal(true);
+                  expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,43).getTime());
+                  expect(fixedPlaylist[4].airtime.getTime()).to.equal(new Date(2014,3,15, 13,04).getTime());
+                  expect(fixedPlaylist[5].airtime.getTime()).to.equal(new Date(2014,3,15, 13,07).getTime());
+                done();
+              });
             });
           });
         });

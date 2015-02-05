@@ -185,31 +185,33 @@ function Scheduler() {
 
       // if the lastAccuratePosition is after the log, set it as the starting point
       LogEntry.getRecent({ _station: station.id, count:1 }, function (err, gottenLogEntry) {
-        finalLogEntry = gottenLogEntry;
+        finalLogEntry = gottenLogEntry[0];
+
         // if the lastAccuratePosition is in the playlist, use it to start
         if ((station.lastAccuratePlaylistPosition) && (station.lastAccuratePlaylistPosition > finalLogEntry.playlistPosition)) {
           lastAccuratePlaylistPosition = station.lastAccuratePlaylistPosition;
-        // otherwise use logentry
+        
+        // otherwise use logEntry
         } else {
           lastAccuratePlaylistPosition = finalLogEntry.playlistPosition;
         }
-
         Spin.getPartialPlaylist({ _station: station.id,
                                     startingPlaylistPosition: lastAccuratePlaylistPosition 
                                 }, function (err, partialPlaylist) {
           
           playlist = partialPlaylist;
 
-          // set timeTracker
-          if (lastAccuratePlaylistPosition == 0) {
+          // if starting with the log, set the timeTracker
+          if (lastAccuratePlaylistPosition == finalLogEntry.playlistPosition) {
             if (finalLogEntry.commercialsFollow) {
               timeTracker = moment(finalLogEntry.endTime + station.secsOfCommercialPerHour/2);
             } else {
               timeTracker = moment(finalLogEntry.endTime);
             };
 
+          // otherwise, set it to the beginning of the playlist
           } else {
-            timeTracker = moment(playlist[0].startTime);
+            timeTracker = moment(playlist[0].airtime);
           }
 
 
