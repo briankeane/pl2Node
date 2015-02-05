@@ -29,12 +29,15 @@ function Scheduler() {
 
     // unpack attrs
     var station = attrs.station;
-    if (attrs.playlistEndTime) {
-      var playlistEndTime = moment(playlistEndTime);
-    } else {
-      var playlistEndTime = moment().add(2, 'hours');
+
+    // return if playlistEndTime is out of range
+    if (attrs.playlistEndTime && (moment().add(1,'days').isBefore(moment(attrs.playlistEndTime)))) {
+      attrs.playlistEndTime = moment().add(1,'days').toDate();
     }
+    
+
     var playlistEndTime = attrs.playlistEndTime || moment().add(2,'hours');
+    
     
     // grab playlist and logs
     LogEntry.getRecent({ _station: station.id,
@@ -95,7 +98,7 @@ function Scheduler() {
 
           var spins = [];
 
-          while(timeTracker.isBefore(playlistEndTime)) {
+          while(timeTracker.isBefore(playlistEndTime) || timeTracker.isSame(playlistEndTime)) {
             song = _.sample(sampleArray);
 
             // while the id is in the recentlyPlayedSongs array, pick another
@@ -179,6 +182,7 @@ function Scheduler() {
       
       // exit if there's no playlist
       if (!fullPlaylist.length) {
+          debugger;
         callback(null, station);
         return;
       }
@@ -208,7 +212,6 @@ function Scheduler() {
             // add time for comemrcial block if necessary
             if (finalLogEntry.commercialsFollow) {
               timeTracker.add(station.secsOfCommercialPerHour/2, 'seconds');
-              debugger;
             }
 
           // otherwise, set it to the beginning of the playlist

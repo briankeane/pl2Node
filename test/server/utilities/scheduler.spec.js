@@ -22,7 +22,7 @@ describe('playlist functions', function (done) {
   var user;
   var rotationItems;
 
-  before(function (done) {
+  beforeEach(function (done) {
     specHelper.clearDatabase(function() {
       user = new User({ twitter: 'BrianKeaneTunes',
                         twitterUID: '756',
@@ -86,7 +86,7 @@ describe('playlist functions', function (done) {
         expect(logEntries[0].durationOffset).to.equal(0);
         
         // make sure all spin values stored
-        expect(spins.length).to.equal(35);
+        expect(spins.length).to.equal(36);
         expect(spins[0].playlistPosition).to.equal(2);
         expect(spins[0].airtime.getTime()).to.equal(new Date(2014,3,15, 12,49).getTime());
         expect(spins[0]._audioBlock.title).to.exist;
@@ -105,10 +105,10 @@ describe('playlist functions', function (done) {
   
   it('updates the lastAccuratePlaylistPosition & lastAccurateAirtime', function (done) {
     Station.findById(station.id, function (err, foundStation) {
-      expect(station.lastAccuratePlaylistPosition).to.equal(36);
-      expect(foundStation.lastAccuratePlaylistPosition).to.equal(36);
+      expect(station.lastAccuratePlaylistPosition).to.equal(37);
+      expect(foundStation.lastAccuratePlaylistPosition).to.equal(37);
       Spin.getByPlaylistPosition({ _station: station.id,
-                                  playlistPosition: 36
+                                  playlistPosition: 37
                                 }, function (err, foundSpin) {
         expect(station.lastAccurateAirtime.getTime()).to.equal(foundSpin.endTime.getTime());
         expect(foundStation.lastAccurateAirtime.getTime()).to.equal(foundSpin.endTime.getTime());
@@ -145,7 +145,8 @@ describe('playlist functions', function (done) {
         toSave.push(station);
         specHelper.saveAll(toSave, function (err, savedObjects) {
           // grab the updated station
-          station = savedObjects[25];
+
+          station = savedObjects[26];
 
           Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
             Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
@@ -176,7 +177,7 @@ describe('playlist functions', function (done) {
         toSave.push(station);
         specHelper.saveAll(toSave, function (err, savedObjects) {
           // grab the updated station
-          station = savedObjects[25];
+          station = savedObjects[26];
 
           Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
             Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
@@ -207,7 +208,7 @@ describe('playlist functions', function (done) {
         toSave.push(station);
         specHelper.saveAll(toSave, function (err, savedObjects) {
           // grab the updated station
-          station = savedObjects[25];
+          station = savedObjects[26];
 
           Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
             Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
@@ -245,12 +246,10 @@ describe('playlist functions', function (done) {
           toSave.push(logEntry);
           specHelper.saveAll(toSave, function (err, savedObjects) {
             // grab the updated station
-            station = savedObjects[25];
+            station = savedObjects[26];
 
             Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
               Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
-                test = _.map(fixedPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
-                debugger;
                 expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 14,16).getTime());
                 expect(fixedPlaylist[8].commercialsFollow).to.equal(true);
                 expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,55).getTime());
@@ -265,10 +264,33 @@ describe('playlist functions', function (done) {
     });
   });
   
-  xit('does not extend the playlist if requested time is out of range', function (done) {
+  it('does not extend the playlist past 24hrs', function (done) {
+    Scheduler.generatePlaylist({ station: station,
+                                playlistEndTime: new Date(2014,3,25, 16,46)
+                              }, function (err, updatedStation) {
+      Spin.getFullPlaylist(station.id, function (err, newPlaylist) {
+        expect(newPlaylist.length).to.equal(432)
+        expect(newPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,43).getTime());
+        expect(newPlaylist[35].airtime.getTime()).to.equal(new Date(2014,3,15, 14,46).getTime());
+        done();
+      })
+    });
   });
 
-  xit('extends the playlist', function (done) {
+  it('extends the playlist 4 hours', function (done) {
+    Scheduler.generatePlaylist({ station: station,
+                                playlistEndTime: new Date(2014,3,15, 16,46)
+                              }, function (err, updatedStation) {
+      Spin.getFullPlaylist(station.id, function (err, newPlaylist) {
+                        test = _.map(newPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
+                debugger;
+        expect(newPlaylist.length).to.equal(72)
+        expect(newPlaylist[71].airtime.getTime()).to.equal(new Date(2014,3,15, 16,46).getTime());
+        expect(newPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,43).getTime());
+        expect(newPlaylist[35].airtime.getTime()).to.equal(new Date(2014,3,15, 14,46).getTime());
+        done();
+      });
+    });
   });
 
   xit('extends the playlist if a commercial leads in', function (done) {
