@@ -160,8 +160,23 @@ describe('playlist functions', function (done) {
         });
       });
     });
+
+    xit('updates the airtimes if commercial leads in', function (done) {
+    });
+
+    xit('updates the airtimes if only the log is correct', function (done) {
+    });
   });
   
+  xit('does not extend the playlist if requested time is out of range', function (done) {
+  });
+
+  xit('extends the playlist', function (done) {
+  });
+
+  xit('extends the playlist if a commercial leads in', function (done) {
+  });
+
   after(function (done) {
     tk.reset();
     done();

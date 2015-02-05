@@ -21,7 +21,7 @@
 | **_user**                               | *reference to 'User'*       | its owning user                               |
 | **secsOfCommercialPerHour**             | *Number*                    | secs of commercials per hour                  |
 | **lastAccuratePlaylistPosition**        | *Number*                    | limit of station accuracy in playlistPositon  |
-| **lastAccurateAirtime                   | *Date*                      | limit of station accuracy in Datetime         |
+| **lastAccurateAirtime**                 | *Date*                      | limit of station accuracy in Datetime         |
 | **averageDailyListeners**               | *Number*                    | average of how many listeners per day         |
 | **averageDailyListenersCalculationDate**| *Date*                      | calculation date of averageDailyListeners     |
 | **timezone**                            | *String*                    | for proper station time display               |
