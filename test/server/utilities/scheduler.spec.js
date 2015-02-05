@@ -133,22 +133,25 @@ describe('playlist functions', function (done) {
 
     it('updates the airtimes from ', function (done) {
       Spin.getFullPlaylist(station.id, function (err, fullPlaylist) {
+        // screw up some airtimes
         for (var i=10; i<fullPlaylist.length; i++) {
           fullPlaylist[i].airtime = new Date(1983,3,15);
         }
+
         station.lastAccuratePlaylistPosition = fullPlaylist[9].playlistPosition;
         station.lastAccurateAirtime = fullPlaylist[9].airtime;
         
+        // group all objects to be saved and save them
         var toSave = fullPlaylist.slice(10,100);
         toSave.push(station);
-
         specHelper.saveAll(toSave, function (err, savedObjects) {
+          // grab the updated station
           station = savedObjects[25];
-
 
           Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
             Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
               test = _.map(fixedPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
+              debugger;
               expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 13,58).getTime());
               expect(fixedPlaylist[22].commercialsFollow).to.equal(true);
               expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,40).getTime());
@@ -161,7 +164,37 @@ describe('playlist functions', function (done) {
       });
     });
 
-    xit('updates the airtimes if commercial leads in', function (done) {
+    it('updates the airtimes if commercial leads in', function (done) {
+      Spin.getFullPlaylist(station.id, function (err, fullPlaylist) {
+        // screw up some airtimes -- starting with a commercialsFollow=true spin
+        for (var i=5; i<fullPlaylist.length; i++) {
+          fullPlaylist[i].airtime = new Date(1983,3,15);
+        }
+
+        station.lastAccuratePlaylistPosition = fullPlaylist[4].playlistPosition;
+        station.lastAccurateAirtime = fullPlaylist[9].airtime;
+        
+        // group all objects to be saved and save them
+        var toSave = fullPlaylist.slice(10,100);
+        toSave.push(station);
+        specHelper.saveAll(toSave, function (err, savedObjects) {
+          // grab the updated station
+          station = savedObjects[25];
+
+          Scheduler.updateAirtimes({ station: station }, function (err, returnedStation) {
+            Spin.getFullPlaylist(station.id, function (err, fixedPlaylist) {
+              test = _.map(fixedPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
+              debugger;
+              expect(fixedPlaylist[22].airtime.getTime()).to.equal(new Date(2014,3,15, 13,58).getTime());
+              expect(fixedPlaylist[22].commercialsFollow).to.equal(true);
+              expect(fixedPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,40).getTime());
+              expect(fixedPlaylist[4].airtime.getTime()).to.equal(new Date(2014,3,15, 12,58).getTime());
+              expect(fixedPlaylist[5].airtime.getTime()).to.equal(new Date(2014,3,15, 13,04).getTime());
+              done();
+            });
+          });
+        });
+      });
     });
 
     xit('updates the airtimes if only the log is correct', function (done) {
