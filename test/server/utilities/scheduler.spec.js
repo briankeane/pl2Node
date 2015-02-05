@@ -282,8 +282,6 @@ describe('playlist functions', function (done) {
                                 playlistEndTime: new Date(2014,3,15, 16,46)
                               }, function (err, updatedStation) {
       Spin.getFullPlaylist(station.id, function (err, newPlaylist) {
-                        test = _.map(newPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition, airtime: spin.airtime, commercialsFollow: spin.commercialsFollow }});
-                debugger;
         expect(newPlaylist.length).to.equal(72)
         expect(newPlaylist[71].airtime.getTime()).to.equal(new Date(2014,3,15, 16,46).getTime());
         expect(newPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,43).getTime());
@@ -293,7 +291,22 @@ describe('playlist functions', function (done) {
     });
   });
 
-  xit('extends the playlist if a commercial leads in', function (done) {
+  it('extends the playlist if a commercial leads in', function (done) {
+    // remove enough for a commercialsFollow spin to be last
+    Spin.find({ _station: station.id, playlistPosition: { $gte: 34 } }).remove().exec(function (err, removedSpins) {
+
+      Scheduler.generatePlaylist({ station: station,
+                                  playlistEndTime: new Date(2014,3,15, 16,46)
+                                }, function (err, updatedStation) {
+        Spin.getFullPlaylist(station.id, function (err, newPlaylist) {
+          expect(newPlaylist.length).to.equal(72)
+          expect(newPlaylist[71].airtime.getTime()).to.equal(new Date(2014,3,15, 16,46).getTime());
+          expect(newPlaylist[34].airtime.getTime()).to.equal(new Date(2014,3,15, 14,43).getTime());
+          expect(newPlaylist[35].airtime.getTime()).to.equal(new Date(2014,3,15, 14,46).getTime());
+          done();
+        });
+      });
+    });
   });
 
   after(function (done) {

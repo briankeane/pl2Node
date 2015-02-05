@@ -182,7 +182,6 @@ function Scheduler() {
       
       // exit if there's no playlist
       if (!fullPlaylist.length) {
-          debugger;
         callback(null, station);
         return;
       }
