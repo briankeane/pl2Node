@@ -12,7 +12,7 @@ var songSchema = AudioBlockSchema.extend({
 });
 
 // ***********************************************************
-// ******************** Common Queries ***********************
+// ************************ Statics **************************
 // ***********************************************************
 
 songSchema.statics.findAllMatchingTitle = function (title, cb) {
@@ -63,5 +63,6 @@ songSchema.statics.all = function (cb) {
   .exec(cb);
 }
 
+// *************************************
 var Song = db.model('Song', songSchema);
 module.exports = Song;

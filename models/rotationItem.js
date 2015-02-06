@@ -97,6 +97,8 @@ rotationItemSchema.methods.updateWeightAndBin = function (weight, bin, callback)
   }
 }
 
+
+// *************************************
 rotationItemSchema.plugin(timestamps);
 var RotationItem = db.model('RotationItem', rotationItemSchema);
 module.exports = RotationItem;

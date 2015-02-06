@@ -60,7 +60,7 @@ spinSchema.virtual('commercialsFollow').get(function () {
 
 
 // ****************************************************************
-// ********************** Playlist Functions **********************
+// *************************** Statics ****************************
 // ****************************************************************
 
 spinSchema.statics.getFullPlaylist = function (stationId, callback) {
@@ -108,6 +108,8 @@ spinSchema.statics.getByPlaylistPosition = function (attrs, callback) {
   .exec(callback);
 };
 
+
+// *************************************
 spinSchema.plugin(timestamps);
 var Spin = db.model('Spin', spinSchema);
 module.exports = Spin;

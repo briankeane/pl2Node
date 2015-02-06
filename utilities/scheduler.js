@@ -45,7 +45,7 @@ function Scheduler() {
 
       Spin.getFullPlaylist(station.id, function (err, currentPlaylist) {
 
-        // create the sample array to draw on
+        // create the sample array to draw from
         sampleArray = [];
         RotationItem.findAllForStation(station.id, function (err, rotationItems) {
           rotationItems.forEach(function (rotationItem) {
@@ -259,6 +259,24 @@ function Scheduler() {
       });
     });
   };
+
+  this.bringCurrent = function (station) {
+    var lastLogEntry;
+    LogEntry.getRecent({ _station, station.id, count: 1 }, function (err, logEntry) {
+      
+      // if there is no log or if the station is already current
+      if (!logEntry.length || logEntry.endTime > Date.now) {
+        callback(null);
+        return;
+      }
+
+      Spin.getFullPlaylist(station.id, function (err, fullPlaylist) {
+        // if there is no playlist, return
+
+      });
+
+    });
+  }
 }
 
 module.exports = new Scheduler();

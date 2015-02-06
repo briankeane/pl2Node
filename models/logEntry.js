@@ -113,6 +113,7 @@ logEntrySchema.statics.getEntryByPlaylistPosition = function (attrs, callback) {
 };
 
 
+// *************************************
 logEntrySchema.plugin(timestamps);
 var LogEntry = db.model('LogEntry', logEntrySchema);
 module.exports = LogEntry;

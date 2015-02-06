@@ -309,6 +309,22 @@ describe('playlist functions', function (done) {
     });
   });
 
+  it('brings the station current', function (done) {
+    tk.travel(new Date(2014,3,15, 14,05));
+    Scheduler.bringCurrent(station, function (err, attrs) {
+      expect(attrs.nowPlaying.airtime.getTime()).to.equal(new Date(2014,3,15, 14,04).getTime());
+      expect(attrs.nextSpin.airtime.getTime()).to.equal(new Date(2014,3,15, 14,07).getTime());
+      Spin.getFullPlaylist(stationid, function (err, currentPlaylist) {
+        expect(currentPlaylist.length).to.equal(23);
+        expect(currentPlaylist[0].airtime.getTime()).to.equal(2014,3,15, 14,07)
+        expect(currentPlaylist[0].playlistPosition).to.equal(24);
+        LogEntry.getRecent({ _station: station.id, count: 1}, function (err, logEntries) {
+          expect(logEntries[0].airtime.getTime()).to.equal(new Date(2014,3,15,14,04).getTime());
+        });
+      });
+    });
+  });
+
   after(function (done) {
     tk.reset();
     done();
