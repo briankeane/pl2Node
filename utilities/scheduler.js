@@ -316,7 +316,7 @@ function Scheduler() {
                 
                 playlist.forEach(function (spin) {
                   playedLogEntries.push(LogEntry.newFromSpin(spin));
-                  if (spin.commercialsFollow) {
+                  if (spin.commercialsFollow && (spin.endTime < new Date())) {
                     playedLogEntries.push( new LogEntry({ playlistPosition: spin.playlistPosition,
                                                           _audioBlock: stationCommercialBlock,
                                                           _station: station.id,
