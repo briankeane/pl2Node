@@ -349,10 +349,29 @@ describe('playlist functions', function (done) {
     });
 
     it('brings the station current if a commercialBlock leads in', function (done) {
+      tk.freeze(new Date(2014,3,15, 14,32));
+      Schedule.bringCurrent(station, function (err) {
+        tk.freeze(new Date(2014,3,15, 15,11));
+        Schedule.bringCurrent(station, function (err) {
+          LogEntry.getFullStationLog(station.id, function (err, logEntries) {
+            Spin.getFullPlaylist(station.id, function (err, currentPlaylist) {
+              expect(currentPlaylist[0].playlistPosition).to.equal(45);
+              expect(currentPlaylist[0].airtime.getTime()).to.equal(new Date(2014,3,15, 15,13).getTime());
+              expect(logEntries[0].playlistPosition).to.equal(44);
+              expect(logEntries[0].airtime.getTime()).to.equal(new Date(2014,3,15, 15,10).getTime());
+            });
+          });
+        });
+      });
+    });
+
+    it('brings the station current if a commercialBlock should be nowPlaying', function (done) {
 
     });
 
-    it('brings the station current if a ')
+    it('brings the station current if nowPlaying precedes a commercialBlock', function (done) {
+
+    });
   });
 
   after(function (done) {
