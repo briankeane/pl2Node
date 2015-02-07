@@ -310,19 +310,49 @@ describe('playlist functions', function (done) {
   });
 
   it('brings the station current', function (done) {
-    tk.travel(new Date(2014,3,15, 14,05));
-    Scheduler.bringCurrent(station, function (err, attrs) {
-      expect(attrs.nowPlaying.airtime.getTime()).to.equal(new Date(2014,3,15, 14,04).getTime());
-      expect(attrs.nextSpin.airtime.getTime()).to.equal(new Date(2014,3,15, 14,07).getTime());
-      Spin.getFullPlaylist(stationid, function (err, currentPlaylist) {
-        expect(currentPlaylist.length).to.equal(23);
-        expect(currentPlaylist[0].airtime.getTime()).to.equal(2014,3,15, 14,07)
-        expect(currentPlaylist[0].playlistPosition).to.equal(24);
-        LogEntry.getRecent({ _station: station.id, count: 1}, function (err, logEntries) {
+    //tk.reset();
+    tk.freeze(new Date(2014,3,15, 14,05));
+    Scheduler.bringCurrent(station, function (err) {
+      Spin.getFullPlaylist(station.id, function (err, currentPlaylist) {
+        LogEntry.getFullStationLog(station.id, function (err, logEntries) {
+          var logMap = _.map(logEntries, function (spin) { return { playlistPosition: spin.playlistPosition,
+                                                  airtime: spin.airtime } });
+          var spinMap = _.map(currentPlaylist, function (spin) { return { playlistPosition: spin.playlistPosition,
+                                                  airtime: spin.airtime } });
+          
+          expect(currentPlaylist[0].airtime.getTime()).to.equal(new Date(2014,3,15, 14,07).getTime());
+          expect(currentPlaylist[0].playlistPosition).to.equal(25);
           expect(logEntries[0].airtime.getTime()).to.equal(new Date(2014,3,15,14,04).getTime());
+          expect(logEntries.length).to.equal(27);
+          debugger;
+          expect(logEntries[1]._audioBlock._type).to.equal('CommercialBlock');
+          done();
+        });
+      }); 
+    });
+
+    it('brings the station current if a spin with commercialsFollow=true leads in', function (done) {
+      tk.freeze(new Date(2014,3,15, 14,30));
+      Schedule.bringCurrent(station, function (err) {
+        tk.freeze(new Date(2014,3,15, 15,11));
+        Schedule.bringCurrent(station, function (err) {
+          LogEntry.getFullStationLog(station.id, function (err, logEntries) {
+            Spin.getFullPlaylist(station.id, function (err, currentPlaylist) {
+              expect(currentPlaylist[0].playlistPosition).to.equal(45);
+              expect(currentPlaylist[0].airtime.getTime()).to.equal(new Date(2014,3,15, 15,13).getTime());
+              expect(logEntries[0].playlistPosition).to.equal(44);
+              expect(logEntries[0].airtime.getTime()).to.equal(new Date(2014,3,15, 15,10).getTime());
+            });
+          });
         });
       });
     });
+
+    it('brings the station current if a commercialBlock leads in', function (done) {
+
+    });
+
+    it('brings the station current if a ')
   });
 
   after(function (done) {

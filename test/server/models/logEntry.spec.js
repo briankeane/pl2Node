@@ -146,7 +146,6 @@ describe('Log Methods', function (done){
                           airtime: new Date(2014,3,15, 12) });
     spin.save(function (err, newSpin) {
       var createdLogEntry = LogEntry.newFromSpin(newSpin);
-      debugger;
       expect(createdLogEntry._station.equals(station.id)).to.equal(true);
       expect(createdLogEntry._audioBlock.equals(song.id)).to.equal(true);
       expect(createdLogEntry.airtime.getTime()).to.equal(spin.airtime.getTime());

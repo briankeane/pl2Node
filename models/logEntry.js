@@ -48,7 +48,7 @@ logEntrySchema.statics.getRecent = function (attrs, callback) {
 
   LogEntry
   .find({ _station: attrs._station })
-  .sort('-playlistPosition')
+  .sort('-airtime')
   .limit(attrs.count)
   .populate('_station _audioBlock')
   .exec(callback);
@@ -57,7 +57,7 @@ logEntrySchema.statics.getRecent = function (attrs, callback) {
 logEntrySchema.statics.getFullStationLog = function (stationId, callback) {
   LogEntry
   .find({ _station: stationId })
-  .sort('-playlistPosition')
+  .sort('-airtime')
   .populate('_station _audioBlock')
   .exec(callback);
 };
@@ -100,7 +100,7 @@ logEntrySchema.statics.getLog = function (attrs, callback) {
 
   LogEntry
   .find(query)
-  .sort('playlistPosition')
+  .sort('airtime')
   .populate('_station _audioBlock')
   .exec(callback);
 };
@@ -116,7 +116,8 @@ logEntrySchema.statics.newFromSpin = function (spin) {
   return new LogEntry({ _station: (spin._station._id || spin._station),
                         playlistPosition: spin.playlistPosition,
                         _audioBlock: (spin._audioBlock._id || spin._audioBlock),
-                        airtime: spin.airtime });
+                        airtime: spin.airtime,
+                        commercialsFollow: spin.commercialsFollow });
 }
 
 

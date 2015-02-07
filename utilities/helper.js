@@ -31,6 +31,24 @@ function Helper() {
       callback(err, results);
     });
   };
+
+  this.removeAll = function (objects, callback) {
+    var functions = [];
+    
+    for (var i=0; i < objects.length; i++) {
+      functions.push((function(obj) {
+          return function(callback) {
+              obj.remove(callback);
+          };
+        })(objects[i]));
+    }
+
+    async.parallel(functions, function (err, results) {
+      // format results
+      results = _.map(results, function(result) { return result[0]; });
+      callback(err, results);
+    });
+  };
 }
 
 module.exports = new Helper();

@@ -5,6 +5,7 @@ var AudioBlock = db.model('AudioBlock', audioBlockSchema);
 var LogEntry = require('../models/logEntry');
 var Commentary = require('../models/commentary');
 var RotationItem = require('../models/rotationItem');
+var CommercialBlock = require('../models/commercialBlock');
 var Song = require('../models/song');
 var Spin = require('../models/spin');
 var User = require('../models/user');
@@ -261,39 +262,78 @@ function Scheduler() {
     });
   };
 
-  this.bringCurrent = function (station) {
-    var lastLogEntry;
+  this.bringCurrent = function (station, callback) {
+    var logEntry;
     var playlist;
-    LogEntry.getRecent({ _station: station.id, count: 1 }, function (err, logEntry) {
+    var newLogEntries = [];
+
+    LogEntry.getRecent({ _station: station.id, count: 1 }, function (err, logEntries) {
       
       // if there is no log or if the station is already current
-      if (!logEntry.length || logEntry.endTime > Date.now) {
-        callback(null);
+      if (!logEntries.length || logEntries[0].endTime > new Date()) {
+        callback(err, station);
         return;
       }
+      
+      logEntry = logEntries[0]
 
-      self.updateAirtimes(station, function (err, updatedStation) {
+      // update airtimes through current time
+      self.updateAirtimes({ station: station,
+                            endTime: new Date() }, function (err, updatedStation) {
         station = updatedStation;
         
+        // make sure the playlist lasts until now
         self.generatePlaylist({ station: station, endTime: Date.now() }, function (err, updatedStation) {
           station = updatedStation;
 
-          Spin.getPartialPlaylist(station.id, function (err, partialPlaylist) {
+          Spin.getPartialPlaylist({ _station: station.id, 
+                                    endTime: new Date()
+                                     }, function (err, partialPlaylist) {
 
             playlist = partialPlaylist;
 
-            Q.fcall(function () {
-              if (logEntry.commercialsFollow) {
-                LogEntry.create({}, function (err, newLogEntry) {
-                  logEntry = newLogEntry;
-                  return newLogEntry;
-                });
-              } else {
+            var stationCommercialBlock = new CommercialBlock({ duration: station.secsOfCommercialPerHour/2 });
+            stationCommercialBlock.save(function (err, savedStationCommercialBlock) {
+              stationCommercialBlock = savedStationCommercialBlock;
+
+              Q.fcall(function () {
+                if (logEntry.commercialsFollow) {
+                  newLogEntry = new LogEntry({ playlistPosition: logEntry.playlistPosition,
+                                               _audioBlock: stationCommercialBlock.id,
+                                               _station: station.id,
+                                               airtime: logEntry.endTime,
+                                               commercialsFollow: false 
+                                             }, function (err, newLogEntry) {
+                    logEntry = newLogEntry;
+                    return newLogEntry;
+                  });
+                }
                 return logEntry;
-              }
-            }).then(function (newLogEntry) {
-              logEntry = newLogEntry;
+                
+              }).then(function (newLogEntry) {
+                logEntry = newLogEntry;
+                var playedLogEntries = [];
+                
+                playlist.forEach(function (spin) {
+                  playedLogEntries.push(LogEntry.newFromSpin(spin));
+                  if (spin.commercialsFollow) {
+                    playedLogEntries.push( new LogEntry({ playlistPosition: spin.playlistPosition,
+                                                          _audioBlock: stationCommercialBlock,
+                                                          _station: station.id,
+                                                          airtime: spin.endTime,
+                                                          commercialsFollow: false }));
+                  }
+                });
+
+                Helper.saveAll(playedLogEntries, function (err, savedLogEntries) {
+                  Helper.removeAll(playlist, function (err, removedPlaylist) {
+                    callback(null);
+                    return null;
+                  });
+                });
+              }).done();
               
+            
             });
           });
         });
