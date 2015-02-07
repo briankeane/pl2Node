@@ -20,7 +20,8 @@
     "moment-timezone": "^0.3.0",
     "mongoose": "^3.8.22",
     "mongoose-schema-extend": "^0.1.7",
-    "mongoose-timestamp": "^0.4.0"
+    "mongoose-timestamp": "^0.4.0",
+    "q": "^1.1.2"
   },
   "devDependencies": {
     "chai": "^1.10.0",

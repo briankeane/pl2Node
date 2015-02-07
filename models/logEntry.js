@@ -112,6 +112,13 @@ logEntrySchema.statics.getEntryByPlaylistPosition = function (attrs, callback) {
   .exec(callback);
 };
 
+logEntrySchema.statics.newFromSpin = function (spin) {
+  return new LogEntry({ _station: (spin._station._id || spin._station),
+                        playlistPosition: spin.playlistPosition,
+                        _audioBlock: (spin._audioBlock._id || spin._audioBlock),
+                        airtime: spin.airtime });
+}
+
 
 // *************************************
 logEntrySchema.plugin(timestamps);

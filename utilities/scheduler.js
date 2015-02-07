@@ -11,6 +11,7 @@ var User = require('../models/user');
 var moment = require('moment-timezone');
 var _ = require('lodash');
 var Helper = require('./helper');
+var Q = require('q');
 
 
 
@@ -262,7 +263,8 @@ function Scheduler() {
 
   this.bringCurrent = function (station) {
     var lastLogEntry;
-    LogEntry.getRecent({ _station, station.id, count: 1 }, function (err, logEntry) {
+    var playlist;
+    LogEntry.getRecent({ _station: station.id, count: 1 }, function (err, logEntry) {
       
       // if there is no log or if the station is already current
       if (!logEntry.length || logEntry.endTime > Date.now) {
@@ -270,11 +272,32 @@ function Scheduler() {
         return;
       }
 
-      Spin.getFullPlaylist(station.id, function (err, fullPlaylist) {
-        // if there is no playlist, return
+      self.updateAirtimes(station, function (err, updatedStation) {
+        station = updatedStation;
+        
+        self.generatePlaylist({ station: station, endTime: Date.now() }, function (err, updatedStation) {
+          station = updatedStation;
 
+          Spin.getPartialPlaylist(station.id, function (err, partialPlaylist) {
+
+            playlist = partialPlaylist;
+
+            Q.fcall(function () {
+              if (logEntry.commercialsFollow) {
+                LogEntry.create({}, function (err, newLogEntry) {
+                  logEntry = newLogEntry;
+                  return newLogEntry;
+                });
+              } else {
+                return logEntry;
+              }
+            }).then(function (newLogEntry) {
+              logEntry = newLogEntry;
+              
+            });
+          });
+        });
       });
-
     });
   }
 }

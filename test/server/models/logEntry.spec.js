@@ -138,5 +138,40 @@ describe('Log Methods', function (done){
       });
     });
   });
+  
+  it('can create a version of itself from a spin', function (done) {
+    var spin = new Spin({ _station: station.id,
+                          playlistPosition: 100,
+                          _audioBlock: song.id,
+                          airtime: new Date(2014,3,15, 12) });
+    spin.save(function (err, newSpin) {
+      var createdLogEntry = LogEntry.newFromSpin(newSpin);
+      debugger;
+      expect(createdLogEntry._station.equals(station.id)).to.equal(true);
+      expect(createdLogEntry._audioBlock.equals(song.id)).to.equal(true);
+      expect(createdLogEntry.airtime.getTime()).to.equal(spin.airtime.getTime());
+      expect(createdLogEntry.playlistPosition).to.equal(100);
+      done();
+    });
+  });
+
+  it('can create a version of itself from a populated spin', function (done) {
+    var spin = new Spin({ _station: station.id,
+                          playlistPosition: 100,
+                          _audioBlock: song.id,
+                          airtime: new Date(2014,3,15, 12) });
+    spin.save(function (err, newSpin) {
+      Spin.findById(newSpin.id)
+      .populate('_station, _audioBlock')
+      .exec(function (err, populatedSpin) {
+        var createdLogEntry = LogEntry.newFromSpin(populatedSpin);
+        expect(createdLogEntry._station.equals(station.id)).to.equal(true);
+        expect(createdLogEntry._audioBlock.equals(song.id)).to.equal(true);
+        expect(createdLogEntry.airtime.getTime()).to.equal(spin.airtime.getTime());
+        expect(createdLogEntry.playlistPosition).to.equal(100);
+        done();
+      });
+    });
+  });
 });
     
